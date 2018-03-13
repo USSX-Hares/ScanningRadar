@@ -58,7 +58,6 @@ function scan_next(radar)
 	if entity.is_connected_to_electric_network() and entity.energy > 20000 then
 		local chunk = {x = 0, y = 0}
 		if radar.state.x >= 0 then
-			log( radar.state.q .. ", D = " .. radar.state.d )
 			if radar.state.q == 0 then
 				chunk.x = radar.state.cx + radar.state.x
 				chunk.y = radar.state.cy - radar.state.y
