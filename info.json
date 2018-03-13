@@ -1,0 +1,9 @@
+{
+  "name": "ScanningRadar",
+  "description": "A scanning radar that sweeps an arc",
+  "version": "0.1.0",
+  "title": "Scanning Radar",
+  "author": "Strath",
+  "dependencies": ["base >= 0.16"],
+  "factorio_version": "0.16"
+}
