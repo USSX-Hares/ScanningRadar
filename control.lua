@@ -1,25 +1,7 @@
-
 function OnEntityCreated(event)
 	if event.created_entity.name == "scanning-radar" then
-		global.radius = settings.global["ScanningRadar_radius"].value
-		global.update = 400 / global.radius
-		if global.update < 2 then
-			global.update = 2
-		elseif global.update > 20 then
-			global.update = 20
-		end
-		table.insert(global.ScanningRadars, {
-			entity = event.created_entity,
-			state = {
-				cx = math.floor(event.created_entity.position.x / 32) + .5,
-				cy = math.floor(event.created_entity.position.y / 32),
-				x = global.radius,
-				y = 0,
-				d = .5 - global.radius,
-				q = 0,
-				r = global.radius
-			}
-		})
+		InitializeSettings()
+		table.insert(global.ScanningRadars, {entity = event.created_entity, state = InitializeState(event.created_entity)})
 		-- register to events after placing the first scanning radar
 		if #global.ScanningRadars == 1 then
 			script.on_event(defines.events.on_tick, OnTick)
@@ -55,21 +37,22 @@ end
 function scan_next(radar)
 	local entity = radar.entity
 	local radius = radar.state.r
+	local direction = global.direction
 	if entity.is_connected_to_electric_network() and entity.energy > 20000 then
 		local chunk = {x = 0, y = 0}
 		if radar.state.x >= 0 then
 			if radar.state.q == 0 then
 				chunk.x = radar.state.cx + radar.state.x
-				chunk.y = radar.state.cy - radar.state.y
+				chunk.y = radar.state.cy - (radar.state.y * direction) 
 			elseif radar.state.q == 1 then
 				chunk.x = radar.state.cx - radar.state.y
-				chunk.y = radar.state.cy - radar.state.x
+				chunk.y = radar.state.cy - (radar.state.x * direction)
 			elseif radar.state.q == 2 then
 				chunk.x = radar.state.cx - radar.state.x
-				chunk.y = radar.state.cy + radar.state.y
+				chunk.y = radar.state.cy + (radar.state.y * direction)
 			elseif radar.state.q == 3 then
 				chunk.x = radar.state.cx + radar.state.y
-				chunk.y = radar.state.cy + radar.state.x
+				chunk.y = radar.state.cy + (radar.state.x * direction)
 			end
 			scan_line(entity.force, entity.surface, radar.state.cx, radar.state.cy, chunk.x, chunk.y)
 			local moved = false
@@ -162,6 +145,32 @@ function plotLineHigh(force, surface, x0,y0, x1,y1)
 	end
 end
 
+function InitializeSettings()
+		global.radius = settings.global["ScanningRadar_radius"].value
+		global.direction = 1
+		if settings.global["ScanningRadar_direction"].value == "Clockwise" then
+			global.direction = -1
+		end
+		global.update = 400 / global.radius
+		if global.update < 2 then
+			global.update = 2
+		elseif global.update > 20 then
+			global.update = 20
+		end
+end
+
+function InitializeState(radar)
+	return {
+		cx = math.floor(radar.position.x / 32) + .5,
+		cy = math.floor(radar.position.y / 32),
+		x = global.radius,
+		y = 0,
+		d = .5 - global.radius,
+		q = 0,
+		r = global.radius
+	}
+end
+
 do---- Init ----
 local function init_radars()
 	global.ScanningRadars = {}
@@ -171,27 +180,10 @@ local function init_radars()
 			name = "scanning-radar",
 		}
 		if #radars then
-			global.radius = settings.global["ScanningRadar_radius"].value
-			global.update = 400 / global.radius
-			if global.update < 2 then
-				global.update = 2
-			elseif global.update > 20 then
-				global.update = 20
-			end
+			InitializeSettings()
 		end
 		for _, radar in pairs(radars) do
-			table.insert(global.ScanningRadars, {
-				entity = radar,
-				state = {
-					cx = math.floor(radar.position.x / 32) + .5,
-					cy = math.floor(radar.position.y / 32),
-					x = global.radius,
-					y = 0,
-					d = .5 - global.radius,
-					q = 0,
-					r = global.radius
-				}
-			})
+			table.insert(global.ScanningRadars, {entity = radar, state = InitializeState(radar)})
 		end
 	end
 end

@@ -8,5 +8,8 @@ If a large radius is used, the initial scan can be slow. Afterwards the speed pi
 
 ##Version History:
 
+###v0.1.0 (2018-03-13)
+* Able to configure direction of rotation.
+
 ###v0.1.0 (2018-03-11)
 * Initial Release.
