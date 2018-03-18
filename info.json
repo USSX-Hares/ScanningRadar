@@ -1,7 +1,7 @@
 {
   "name": "ScanningRadar",
   "description": "A scanning radar that sweeps an arc",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "title": "Scanning Radar",
   "author": "Strath",
   "dependencies": ["base >= 0.16"],

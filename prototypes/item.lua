@@ -9,5 +9,13 @@ data:extend({
     order = "z[radar]-a[radar]",
     place_result = "scanning-radar",
     stack_size = 10
+  },
+  {
+    type = "item",
+    name = "scanning-radar-connection",
+    icon = "__core__/graphics/empty.png",
+    icon_size = 1,
+    flags = {"hidden"},
+    stack_size = 1
   }
 })
