@@ -1,6 +1,8 @@
 # Scanning Radar
-Factorio mod:  A radar that scans in a sweeping arc
+Factorio mod:  A radar that actually scans in a sweeping arc. Massive power requirements that scale with area scanned and speed.
 
-Default settings to scan about the same area as the vanilla radar though much faster, can be increased or decreased to experiment.
-A change to the radius takes effect after the radar is picked and replaced
-If a large radius is used, the initial scan can be slow. Afterwards the speed picks back up
+Default settings to scan about the same area as the vanilla radar.
+Connect signals to modify the behavior.
+The initial scan can be slow quite slow as the game generates map data.
+Scanning too much map area can bloat your game. 
+375,000 chunks takes about 9GB of memory which is 3/4 of a full scan with a radius of 400
