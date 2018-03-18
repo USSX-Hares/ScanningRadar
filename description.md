@@ -1,14 +1,15 @@
 ##Scanning Radar
-A radar that actually scans in a sweeping arc. Massive power requirements. 
-Initial version, may still need a bit of polish.
+A radar that actually scans in a sweeping arc. Massive power requirements that scale with area scanned and speed.
 
-Default settings to scan about the same area as the vanilla radar though much faster, can be increased or decreased to experiment.
-A change to the radius takes effect after the radar is picked and replaced
-If a large radius is used, the initial scan can be slow. Afterwards the speed picks back up
+Default settings to scan about the same area as the vanilla radar.
+Connect signals to modify the behaviour.
+The initial scan can be slow quite slow as the game generates map data.
+Scanning too much map area can bloat your game. 
+375,000 chunks takes about 9GB of memory which is 3/4 of a full scan with a radius of 400
 
 ##Version History:
 
-###v0.2.0 (2018-03-18)
+###v0.2.3 (2018-03-18)
 * Signal input support added, can control
   * [R]adius, Scanning radius in chunks
   * [D]irection, 1 for Clockwise, -1 for Counterclockwise
@@ -18,6 +19,8 @@ If a large radius is used, the initial scan can be slow. Afterwards the speed pi
   * [N]ear range, near limit scanning radius
   * [F]ar range, near limit scanning radius (equivilent to [R])
 * Can enable/disable radar with condition
+* Power usage scales with speed and radius
+* Able to configure default scanning speed
 * Switched from Bresenham's circle algorithm to trig based calculation. CPUs made in the last 20 years can do math somewhat quicker
 
 ###v0.1.0 (2018-03-13)

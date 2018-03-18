@@ -118,12 +118,42 @@ data:extend({
     radius_minimap_visualisation_color = { r = 0.059, g = 0.092, b = 0.235, a = 0.275 },
   },
   {
+    type = "radar",
+    name = "scanning-radar-powerdump",
+    icon = "__ScanningRadar__/graphics/item_icon_scanningpower.png",
+    icon_size = 32,
+    flags = {"placeable-player", "player-creation"},
+    order = "a-a-a",
+    minable = {hardness = 0.2, mining_time = 0.5, result = "scanning-radar-powerdump"},
+    max_health = 1,
+    corpse = "big-remnants",
+    collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
+    energy_per_sector = "1J",
+    max_distance_of_sector_revealed = 1,
+    max_distance_of_nearby_sector_revealed = 1,
+    energy_per_nearby_scan = "1J",
+    energy_source =
+    {
+      type = "electric",
+      usage_priority = "secondary-input"
+    },
+    energy_usage = "2500kW",
+    pictures = {layers = {{
+      filename = "__core__/graphics/empty.png",
+      priority = "low",
+      width = 1,
+      height = 1,
+      direction_count = 1,
+    }}}
+  },
+  {
     type = "pump",
     name = "scanning-radar-connection",
+		-- yes, this causes a graphical glitch but it's better that having a blank box in various parts of the UI
     icon = "__base__/graphics/icons/radar.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
-    order = "z-z-z",
+    order = "a-a-b",
     minable = {hardness = 0.2, mining_time = 0.5, result = "scanning-radar-connection"},
     max_health = 250,
     corpse = "big-remnants",
@@ -150,20 +180,47 @@ data:extend({
     energy_usage = "10MW",
     pumping_speed = 1,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-
     animations =
     {
       north = { filename = "__ScanningRadar__/graphics/radar_connection.png",
-                width = 98, height = 128, frame_count = 1
+                width = 98, height = 128, frame_count = 1,
+                shift = util.by_pixel(1, -16),
+                hr_version = { filename = "__ScanningRadar__/graphics/radar_hr-connection.png",
+                               priority = "low",
+                               width = 196, height = 254, frame_count = 1,
+                               shift = util.by_pixel(1, -16),
+                               scale = 0.5
+                }
       },
       east = { filename = "__ScanningRadar__/graphics/radar_connection.png",
-                width = 98, height = 128, frame_count = 1
+                width = 98, height = 128, frame_count = 1,
+                shift = util.by_pixel(1, -16),
+                hr_version = { filename = "__ScanningRadar__/graphics/radar_hr-connection.png",
+                               priority = "low",
+                               width = 196, height = 254, frame_count = 1,
+                               shift = util.by_pixel(1, -16),
+                               scale = 0.5
+                }
       },
       south = { filename = "__ScanningRadar__/graphics/radar_connection.png",
-                width = 98, height = 128, frame_count = 1
+                width = 98, height = 128, frame_count = 1,
+                shift = util.by_pixel(1, -16),
+                hr_version = { filename = "__ScanningRadar__/graphics/radar_hr-connection.png",
+                               priority = "low",
+                               width = 196, height = 254, frame_count = 1,
+                               shift = util.by_pixel(1, -16),
+                               scale = 0.5
+                }
       },
       west = { filename = "__ScanningRadar__/graphics/radar_connection.png",
-                width = 98, height = 128, frame_count = 1
+                width = 98, height = 128, frame_count = 1,
+                shift = util.by_pixel(1, -16),
+                hr_version = { filename = "__ScanningRadar__/graphics/radar_hr-connection.png",
+                               priority = "low",
+                               width = 196, height = 254, frame_count = 1,
+                               shift = util.by_pixel(1, -16),
+                               scale = 0.5
+                }
       }
     },
     --circuit_wire_connection_points = circuit_connector_definitions["pump"].points,

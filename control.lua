@@ -1,7 +1,7 @@
 function OnEntityCreated(event)
 	if event.created_entity.name == "scanning-radar" then
 		local connection = event.created_entity.surface.create_entity{name = "scanning-radar-connection", position = event.created_entity.position, force = event.created_entity.force}
-		table.insert(global.ScanningRadars, {connection = connection, radar=event.created_entity, state = InitializeState(event.created_entity)})
+		table.insert(global.ScanningRadars, {connection = connection, radar=event.created_entity, dump = {}, state = InitializeState(event.created_entity)})
 		-- register to events after placing the first
 		if #global.ScanningRadars == 1 then
 			script.on_event(defines.events.on_tick, OnTick)
@@ -14,6 +14,9 @@ function OnEntityRemoved(event)
 	if event.entity.name == "scanning-radar-connection" then
 		for i=#global.ScanningRadars, 1, -1 do
 			if global.ScanningRadars[i].connection.unit_number == event.entity.unit_number then
+				for j=1, #global.ScanningRadars[i].dump, 1 do
+					global.ScanningRadars[i].dump[j].destroy()
+				end
 				global.ScanningRadars[i].radar.destroy()
 				table.remove(global.ScanningRadars, i)
 			end
@@ -57,7 +60,7 @@ function read_signals(radar)
 	end
 	-- apply signals
 	-- set inside radius and push the outside radius out if needed
-	if values.n <= 0 then
+	if values.n < 1 then
 		values.n = 1
 	end
 	radar.state.inner = values.n * 32
@@ -66,8 +69,12 @@ function read_signals(radar)
 	end
 	-- set outside radius and max step size
 	local tau = 6.2831853071796
-	if values.r <= 0 and radar.state.radius ~= settings.global["ScanningRadar_radius"].value  * 32 then
+	if values.r <= 0 and radar.state.radius ~= settings.global["ScanningRadar_radius"].value * 32 then
 		values.r = settings.global["ScanningRadar_radius"].value
+	end
+	-- Ok, thats big enough.
+	if values.r > 500 then
+		values.r = 500
 	end
 	if values.r > 0 then
 		radar.state.radius = values.r * 32
@@ -97,6 +104,9 @@ function read_signals(radar)
 		radar.state.oscillate = true
 	end
 	-- set speed
+	if values.s == 0 then
+		values.s = settings.global["ScanningRadar_speed"].value
+	end
 	if values.s >= 1 and values.s <= 10 then
 		radar.state.speed = values.s
 	end
@@ -151,12 +161,51 @@ function is_pump_enabled(pump)
 	return true
 end
 
+function make_power_dump(radar)
+	-- =9.824379*(PI()*$N$8^2-PI()*$M$8^2)*P9/5/1000
+	local constant = .00617283937849
+	local dump_size = 2.5
+	local i = radar.state.inner / 32 - 1
+	local o = radar.state.radius / 32
+	local s = radar.state.speed
+	local extra = (constant * (o * o - i * i) * s - 10) / dump_size
+	if extra < 0 then
+		extra = 0
+	end
+	extra = extra + .5 - (extra + .5) % 1
+	-- try not to stall the game too badly. Caps power usage at 10GW
+	if extra > 4000 then
+		extra = 4000
+	end
+	if extra > #radar.dump then
+		--game.print( "need " .. extra - #radar.dump .. " more entities")
+		for i=1, extra - #radar.dump, 1 do
+			local sink = radar.radar.surface.create_entity{name = "scanning-radar-powerdump", position = radar.radar.position, force = radar.radar.force}
+			table.insert(radar.dump, sink)
+		end
+	elseif extra < #radar.dump then
+		--game.print( "need " .. #radar.dump - extra .. " fewer entities")
+		for i=#radar.dump, extra + 1, -1 do
+			radar.dump[i].destroy()
+			table.remove(radar.dump, i)
+		end
+	end
+end
+
 function scan_next(radar)
 	local entity = radar.radar
 	local state = radar.state
 	local enabled = is_pump_enabled(radar.connection)
-	radar.radar.active = enabled
-	if entity.is_connected_to_electric_network() and enabled and entity.energy > 20000 then
+	for i=1, #radar.dump, 1 do
+		radar.dump[i].active = enabled
+	end
+	entity.active = enabled
+	-- don't scan if the power is low
+	-- check now so the dump still draws power
+	if entity.energy < 160000 then
+		enabled = false
+	end
+	if entity.is_connected_to_electric_network() and enabled then
 		-- move at speed
 		local magnitude = 10
 		magnitude = ((magnitude + 1) - state.speed / 10 * magnitude)
@@ -213,6 +262,13 @@ function scan_next(radar)
 			scan_line(entity.force, entity.surface, near.x, near.y, far.x, far.y)
 			radar.state.previous = state.angle
 		end
+	end
+	-- once every ten updates, refresh dump entities. Better UPS and more certain execution
+	if state.counter >= 10 then
+		make_power_dump(radar)
+		radar.state.counter = 0
+	else
+		radar.state.counter = state.counter + 1
 	end
 end
 
@@ -288,7 +344,8 @@ function InitializeState(radar)
 	    oscillate = false,
 	    start = 0,
 	    stop = 0,
-	    speed = 5
+	    speed = settings.global["ScanningRadar_speed"].value,
+	    counter = 0
 	}
 	if settings.global["ScanningRadar_direction"].value == "Clockwise" then
 		state.direction = 1
@@ -307,9 +364,10 @@ local function init_radars()
 		for _, radar in pairs(radars) do
 			local connection = surface.find_entity("scanning-radar-connection", radar.position)
 			if connection == nil then
-				connection = event.created_entity.surface.create_entity{name = "scanning-radar-connection", position = event.created_entity.position, force = event.created_entity.force}
+				connection = surface.create_entity{name = "scanning-radar-connection", position = radar.position, force = radar.force}
 			end
-			table.insert(global.ScanningRadars, {connection = connection, radar=event.created_entity, state=InitializeState(event.created_entity)})
+			local dump = surface.find_entities_filtered{name="scanning-radar-powerdump", position = radar.position, force = radar.force}
+			table.insert(global.ScanningRadars, {connection = connection, radar=radar, dump=dump, state=InitializeState(radar)})
 		end
 	end
 end

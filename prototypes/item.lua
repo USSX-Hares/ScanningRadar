@@ -12,6 +12,14 @@ data:extend({
   },
   {
     type = "item",
+    name = "scanning-radar-powerdump",
+    icon = "__core__/graphics/empty.png",
+    icon_size = 1,
+    flags = {"hidden"},
+    stack_size = 1
+  },
+  {
+    type = "item",
     name = "scanning-radar-connection",
     icon = "__core__/graphics/empty.png",
     icon_size = 1,
