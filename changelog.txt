@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.4
+Date: 2018-03-18
+  Compatibility:
+    - Mod 'Flare Stack' requires all items to have a 32 pixel icon
+---------------------------------------------------------------------------------------------------
 Version: 0.2.3
 Date: 2018-03-18
   Major Features:
@@ -9,7 +14,7 @@ Date: 2018-03-18
        [B]egin angle, 0-360, sweep constraint
        [E]nd angle, 0-360, sweep constraint
        [N]ear range, near limit scanning radius
-       [F]ar range, outer limit scanning radius (equivalent to [R])
+       [F]ar range, near limit scanning radius (equivilent to [R])
     - Can enable/disable radar with condition
     - Power usage scales with speed and radius
   Minor Features:
