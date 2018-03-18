@@ -11,13 +11,13 @@ Scanning too much map area can bloat your game.
 
 ###v0.2.3 (2018-03-18)
 * Signal input support added, can control
-  * [R]adius, Scanning radius in chunks
-  * [D]irection, 1 for Clockwise, -1 for Counterclockwise
-  * [S]peed, 1 (slow) - 10 (fast)
-  * [B]egin angle, 0-360, sweep constraint
-  * [E]nd angle, 0-360, sweep constraint
-  * [N]ear range, near limit scanning radius
-  * [F]ar range, near limit scanning radius (equivalent to [R])
+    * [R]adius, Scanning radius in chunks
+    * [D]irection, 1 for Clockwise, -1 for Counterclockwise
+    * [S]peed, 1 (slow) - 10 (fast)
+    * [B]egin angle, 0-360, sweep constraint
+    * [E]nd angle, 0-360, sweep constraint
+    * [N]ear range, near limit scanning radius
+    * [F]ar range, outer limit scanning radius (equivalent to [R])
 * Can enable/disable radar with condition
 * Power usage scales with speed and radius
 * Able to configure default scanning speed

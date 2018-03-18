@@ -9,7 +9,7 @@ Date: 2018-03-18
        [B]egin angle, 0-360, sweep constraint
        [E]nd angle, 0-360, sweep constraint
        [N]ear range, near limit scanning radius
-       [F]ar range, near limit scanning radius (equivalent to [R])
+       [F]ar range, outer limit scanning radius (equivalent to [R])
     - Can enable/disable radar with condition
     - Power usage scales with speed and radius
   Minor Features:
