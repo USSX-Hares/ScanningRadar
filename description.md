@@ -9,6 +9,9 @@ Scanning too much map area can bloat your game.
 
 ##Version History:
 
+###v0.2.5 (2018-05-02)
+* Quick fix for mining, seems to fix bot mining as well
+
 ###v0.2.4 (2018-03-18)
 * Mod 'Flare Stack' requires all items to have a 32 pixel icon
 

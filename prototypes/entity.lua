@@ -5,7 +5,7 @@ data:extend({
     icon = "__ScanningRadar__/graphics/item_icon_scanningradar.png",
     icon_size = 32,
     flags = {"placeable-player", "player-creation"},
-    minable = {hardness = 0.2, mining_time = 0.5, result = "scanning-radar"},
+    minable = {hardness = 0.2, mining_time = 0.5, result = nil},
     max_health = 250,
     corpse = "big-remnants",
     resistances =
@@ -124,7 +124,7 @@ data:extend({
     icon_size = 32,
     flags = {"placeable-player", "player-creation"},
     order = "a-a-a",
-    minable = {hardness = 0.2, mining_time = 0.5, result = "scanning-radar-powerdump"},
+    minable = {hardness = 0.2, mining_time = 0.5, result = nil},
     max_health = 1,
     corpse = "big-remnants",
     collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
@@ -149,12 +149,12 @@ data:extend({
   {
     type = "pump",
     name = "scanning-radar-connection",
-		-- yes, this causes a graphical glitch but it's better that having a blank box in various parts of the UI
+		-- yes, this causes a graphical glitch but it's better than having a blank box in various parts of the UI
     icon = "__base__/graphics/icons/radar.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
     order = "a-a-b",
-    minable = {hardness = 0.2, mining_time = 0.5, result = "scanning-radar-connection"},
+    minable = {hardness = 0.2, mining_time = 0.5, result = "scanning-radar"},
     max_health = 250,
     corpse = "big-remnants",
     collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
