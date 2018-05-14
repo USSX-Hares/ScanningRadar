@@ -63,6 +63,9 @@ function read_signals(radar)
 	if values.n < 1 then
 		values.n = 1
 	end
+	if values.n > 499 then
+		values.n = 499
+	end
 	radar.state.inner = values.n * 32
 	if radar.state.radius < values.n * 32 or (values.r > 0 and values.r < values.n) then
 		values.r = values.n + 1
@@ -78,7 +81,7 @@ function read_signals(radar)
 	end
 	if values.r > 0 then
 		radar.state.radius = values.r * 32
-		radar.state.step = tau / (tau * values.r * 1.3)
+		radar.state.step = 1 / values.r
 	end
 	-- constrain angle
 	if values.b ~= 0 or values.e ~= 0 then
@@ -169,7 +172,7 @@ function make_power_dump(radar)
 	local o = radar.state.radius / 32
 	local s = radar.state.speed
 	local extra = (constant * (o * o - i * i) * s - 10) / dump_size
-	if extra < 0 then
+	if extra < 0 or not settings.global["ScanningRadar_power"].value then
 		extra = 0
 	end
 	extra = extra + .5 - (extra + .5) % 1
@@ -206,61 +209,69 @@ function scan_next(radar)
 		enabled = false
 	end
 	if entity.is_connected_to_electric_network() and enabled then
-		-- move at speed
-		local magnitude = 10
-		magnitude = ((magnitude + 1) - state.speed / 10 * magnitude)
-		magnitude = magnitude * magnitude
-		local step = state.step / magnitude
-		local new_angle = state.angle + step * state.direction
-		-- is the angle constrained?
-		if state.constrained then
-			local a = state.start < state.stop
-			local b = state.direction > 0
-			local c = new_angle < state.start
-			local d = new_angle > state.stop
-			if b and d and (a or (not a and c)) then
-				if state.oscillate then
-					radar.state.direction = -1
-					new_angle = state.stop
-					radar.state.previous = new_angle + state.step
-				else
-					new_angle = state.start
-					radar.state.previous = new_angle - state.step
-				end
-			elseif not b and c and (a or (not a and d)) then
-				if state.oscillate then
-					radar.state.direction = 1
-					new_angle = state.start
-					radar.state.previous = new_angle - state.step
-				else
-					new_angle = state.stop
-					radar.state.previous = new_angle + state.step
-				end
-			end
-		end
-		-- wrap around at Tau and zero
-		local tau = 6.2831853071796
-		if new_angle > tau then
-			new_angle = new_angle - tau
-			radar.state.previous = state.previous - tau
-		elseif new_angle < 0 then
-			new_angle = new_angle + tau
-			radar.state.previous = state.previous + tau
-		end
-		-- save back new angle
- 		radar.state.angle = new_angle
 		-- plot only when we've rotated far enough to pick up next chunk on outside circumference
-		local low = state.previous + state.step * state.direction
-		local high = state.previous - state.step * state.direction
-		if state.angle <= low or state.angle >= high then
+		local fullstep = state.previous + (state.step - .00000001) * state.direction
+		if (state.direction == -1 and state.angle <= fullstep) or (state.direction == 1 and state.angle >= fullstep) then
 			local coa = math.cos(state.angle)
 			local soa = math.sin(state.angle)
 			local near = { x = state.cx + state.inner * coa,
 			               y = state.cy + state.inner * soa}
 			local far = { x = state.cx + state.radius * coa,
 			              y = state.cy + state.radius * soa}
-			scan_line(entity.force, entity.surface, near.x, near.y, far.x, far.y)
-			radar.state.previous = state.angle
+			if state.charting > 3 then
+				radar.state.charting = radar.state.charting - 3
+			else
+				radar.state.charting = scan_line(entity.force, entity.surface, near.x, near.y, far.x, far.y)
+			end
+			if radar.state.charting < 3 then
+				radar.state.previous = state.angle
+				radar.state.charting = 0
+			end
+		end
+		if radar.state.charting == 0 then
+			-- move at speed
+			local magnitude = 10
+			magnitude = (magnitude + 1) - state.speed / 10 * magnitude
+			magnitude = magnitude * magnitude
+			local step = state.step / magnitude
+			local new_angle = state.angle + step * state.direction
+			-- is the angle constrained?
+			if state.constrained then
+				local a = state.start < state.stop
+				local b = state.direction > 0
+				local c = new_angle < state.start
+				local d = new_angle > state.stop
+				if b and d and (a or (not a and c)) then
+					if state.oscillate then
+						radar.state.direction = -1
+						new_angle = state.stop
+						radar.state.previous = new_angle + state.step
+					else
+						new_angle = state.start
+						radar.state.previous = new_angle - state.step
+					end
+				elseif not b and c and (a or (not a and d)) then
+					if state.oscillate then
+						radar.state.direction = 1
+						new_angle = state.start
+						radar.state.previous = new_angle - state.step
+					else
+						new_angle = state.stop
+						radar.state.previous = new_angle + state.step
+					end
+				end
+			end
+			-- wrap around at Tau and zero
+			local tau = 6.2831853071796
+			if new_angle >= tau then
+				new_angle = new_angle - tau
+				radar.state.previous = state.previous - tau
+			elseif new_angle < 0 then
+				new_angle = new_angle + tau
+				radar.state.previous = state.previous + tau
+			end
+			-- save back new angle
+			radar.state.angle = new_angle
 		end
 	end
 	-- once every ten updates, refresh dump entities. Better UPS and more certain execution
@@ -275,20 +286,21 @@ end
 function scan_line(force, surface, x0, y0, x1, y1)
 	if math.abs(y1 - y0) < math.abs(x1 - x0) then
 		if x0 > x1 then
-			plotLineLow(force, surface, x1, y1, x0, y0)
+			return plotLineLow(force, surface, x1, y1, x0, y0)
 		else
-			plotLineLow(force, surface, x0, y0, x1, y1)
+			return plotLineLow(force, surface, x0, y0, x1, y1)
 		end
 	else
 		if y0 > y1 then
-			plotLineHigh(force, surface, x1, y1, x0, y0)
+			return plotLineHigh(force, surface, x1, y1, x0, y0)
 		else
-			plotLineHigh(force, surface, x0, y0, x1, y1)
+			return plotLineHigh(force, surface, x0, y0, x1, y1)
 		end
 	end
 end
 
 function plotLineLow(force, surface, x0,y0, x1,y1)
+	local charting = 0
 	local dx = x1 - x0
 	local dy = y1 - y0
 	local yi = 1
@@ -298,17 +310,30 @@ function plotLineLow(force, surface, x0,y0, x1,y1)
 	end
 	local D = 2*dy - dx
 	local y = y0
+	local xlow = 1
+	local ylow = 1
+	local xhigh = -1
+	local yhigh = -1
 	for x = x0, x1, 1 do
-		force.chart(surface, {{x,y}, {x,y}})
+		if not (x >= xlow and x < xhigh and y >= ylow and y < yhigh) then
+			charting = charting + (not force.is_chunk_charted(surface, {x/32,y/32}) and 1 or 0)
+			force.chart(surface, {{x,y}, {x,y}})
+			xlow = math.floor(x / 32) * 32
+			ylow = math.floor(y / 32) * 32
+			xhigh = xlow + 32
+			yhigh = ylow + 32
+		end
 		if D > 0 then
 			y = y + yi
 			D = D - 2*dx
 		end
 		D = D + 2*dy
 	end
+	return charting
 end
 
 function plotLineHigh(force, surface, x0,y0, x1,y1)
+	local charting = 0
 	local dx = x1 - x0
 	local dy = y1 - y0
 	local xi = 1
@@ -318,19 +343,30 @@ function plotLineHigh(force, surface, x0,y0, x1,y1)
 	end
 	local D = 2 * dx - dy
 	local x = x0
+	local xlow = 1
+	local ylow = 1
+	local xhigh = -1
+	local yhigh = -1
 	for y=y0, y1, 1 do
-		force.chart(surface, {{x,y}, {x,y}})
+		if not (x >= xlow and x < xhigh and y >= ylow and y < yhigh) then
+			charting = charting + (not force.is_chunk_charted(surface, {x/32,y/32}) and 1 or 0)
+			force.chart(surface, {{x,y}, {x,y}})
+			xlow = math.floor(x / 32) * 32
+			ylow = math.floor(y / 32) * 32
+			xhigh = xlow + 32
+			yhigh = ylow + 32
+		end
 		if D > 0 then
 			x = x + xi
 			D = D - 2 * dy
 		end
 		D = D + 2 * dx
 	end
+	return charting
 end
 
 function InitializeState(radar)
 	-- build state of new radar with defaults
-	local tau = 6.2831853071796
 	local state = {
 	    cx = math.floor(radar.position.x / 32) * 32 + 16,
 	    cy = math.floor(radar.position.y / 32) * 32 + 16,
@@ -338,17 +374,21 @@ function InitializeState(radar)
 	    inner = 1 * 32,
 	    angle = 0,
 	    previous = 0,
-	    step = tau / (tau * settings.global["ScanningRadar_radius"].value * 1.3),
+	    step = 1 / settings.global["ScanningRadar_radius"].value,
 	    direction = -1,
 	    constrained = false,
 	    oscillate = false,
 	    start = 0,
 	    stop = 0,
 	    speed = settings.global["ScanningRadar_speed"].value,
-	    counter = 0
+	    counter = 0,
+	    charting = 0
 	}
 	if settings.global["ScanningRadar_direction"].value == "Clockwise" then
 		state.direction = 1
+		state.previous = -state.step
+	else
+		state.previous = state.step
 	end
 	return state
 end

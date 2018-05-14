@@ -6,14 +6,24 @@ Connect signals to modify the behavior.
 The initial scan can be quite slow as the game generates map data.
 Scanning too much map area can bloat your game. 
 375,000 chunks takes about 9GB of memory which is 3/4 of a full scan with a radius of 400
+Clean up with [DeleteEmptyChunks](https://mods.factorio.com/mod/DeleteEmptyChunks)
 
 ##Version History:
+
+###v0.2.8 (2018-05-13)
+  * Only call force.chart() once per chunk per scan
+  * Corrected for floating point error near zero degrees
+  * Inner radius specified by signal was not limited
+  * Added option to disable additional power usage
+  * Pause sweep while game generates new map data
+  * Step size increased to full chunk on outside diameter per step
+  * Polished prototype entries
 
 ###v0.2.5 (2018-05-02)
 * Quick fix for mining, seems to fix bot mining as well
 
 ###v0.2.4 (2018-03-18)
-* Mod 'Flare Stack' requires all items to have a 32 pixel icon
+* Some mods requires all items to have a 32 pixel icon
 
 ###v0.2.3 (2018-03-18)
 * Signal input support added, can control
@@ -27,7 +37,7 @@ Scanning too much map area can bloat your game.
 * Can enable/disable radar with condition
 * Power usage scales with speed and radius
 * Able to configure default scanning speed
-* Switched from Bresenham's circle algorithm to trig based calculation. CPUs made in the last 20 years can do math somewhat quicker
+* Switched from Bresenham's circle algorithm to trig based calculation
 
 ###v0.1.0 (2018-03-13)
 * Able to configure direction of rotation.

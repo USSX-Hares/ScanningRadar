@@ -24,5 +24,13 @@ data:extend({
     default_value = "Counterclockwise",
 	allowed_values = { "Counterclockwise", "Clockwise" },
     order = "3"
+  },
+  {
+    type = "bool-setting",
+    name = "ScanningRadar_power",
+    setting_type = "runtime-global",
+    default_value = true,
+    order = "4"
   }
+
 })

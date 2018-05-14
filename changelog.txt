@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.8
+Date: 2018-05-13
+  Bugfixes:
+    - Only call force.chart() once per chunk per scan
+    - Corrected for floating point error near zero degrees
+    - Inner radius specified by signal was not limited
+  Minor Features:
+    - Added option to disable additional power usage
+  Changes:
+    - Pause sweep while game generates new map data
+    - Step size increased to full chunk on outside diameter per step
+    - Polished prototype entries
+---------------------------------------------------------------------------------------------------
 Version: 0.2.5
 Date: 2018-05-02
   Bugfixes:
@@ -7,7 +20,7 @@ Date: 2018-05-02
 Version: 0.2.4
 Date: 2018-03-18
   Compatibility:
-    - Mod 'Flare Stack' requires all items to have a 32 pixel icon
+    - Some mods requires all items to have a 32 pixel icon
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.3
 Date: 2018-03-18
@@ -26,7 +39,6 @@ Date: 2018-03-18
     - Able to configure default scanning speed
   Changes:
     - Switched from Bresenham's circle algorithm to trig based calculation
-       CPUs made in the last 20 years can do math somewhat quicker
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.1
 Date: 2018-03-13

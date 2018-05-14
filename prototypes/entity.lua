@@ -21,7 +21,7 @@ data:extend({
     },
     collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
     energy_per_sector = "100MJ",
-    max_distance_of_sector_revealed = 1,
+    max_distance_of_sector_revealed = 0,
     max_distance_of_nearby_sector_revealed = 1,
     energy_per_nearby_scan = "100kJ",
     energy_source =
@@ -129,15 +129,15 @@ data:extend({
     corpse = "big-remnants",
     collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
     energy_per_sector = "1J",
-    max_distance_of_sector_revealed = 1,
-    max_distance_of_nearby_sector_revealed = 1,
+    max_distance_of_sector_revealed = 0,
+    max_distance_of_nearby_sector_revealed = 0,
     energy_per_nearby_scan = "1J",
     energy_source =
     {
       type = "electric",
       usage_priority = "secondary-input"
     },
-    energy_usage = "2500kW",
+    energy_usage = "2500.1kW",
     pictures = {layers = {{
       filename = "__core__/graphics/empty.png",
       priority = "low",
@@ -149,8 +149,7 @@ data:extend({
   {
     type = "pump",
     name = "scanning-radar-connection",
-		-- yes, this causes a graphical glitch but it's better than having a blank box in various parts of the UI
-    icon = "__base__/graphics/icons/radar.png",
+    icon = "__ScanningRadar__/graphics/item_icon_scanningconnector.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
     order = "a-a-b",
@@ -178,8 +177,10 @@ data:extend({
       emissions = 0
     },
     energy_usage = "10MW",
-    pumping_speed = 1,
+    pumping_speed = 0.16666667,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
+		-- yes, this causes a graphical glitch where the entity images overlap but it's 
+		-- better than having a blank box in the mouse over window
     animations =
     {
       north = { filename = "__ScanningRadar__/graphics/radar_connection.png",
