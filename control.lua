@@ -5,26 +5,103 @@ function OnEntityCreated(event)
 		-- register to events after placing the first
 		if #global.ScanningRadars == 1 then
 			script.on_event(defines.events.on_tick, OnTick)
-			script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined, defines.events.on_entity_died}, OnEntityRemoved)
+			script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined}, OnEntityMined)
+			script.on_event({defines.events.on_entity_died}, OnEntityDied)
 		end
 	end
 end
 
-function OnEntityRemoved(event)
+function OnEntityMined(event)
+	local index = -1
 	if event.entity.name == "scanning-radar-connection" then
 		for i=#global.ScanningRadars, 1, -1 do
 			if global.ScanningRadars[i].connection.unit_number == event.entity.unit_number then
-				for j=1, #global.ScanningRadars[i].dump, 1 do
-					global.ScanningRadars[i].dump[j].destroy()
-				end
-				global.ScanningRadars[i].radar.destroy()
-				table.remove(global.ScanningRadars, i)
+				index = i
+				--game.print("mined connection")
+				break
 			end
 		end
+	elseif event.entity.name == "scanning-radar" then
+		for i=#global.ScanningRadars, 1, -1 do
+			if global.ScanningRadars[i].radar.unit_number == event.entity.unit_number then
+				index = i
+				--game.print("mined radar")
+				break
+			end
+		end
+	elseif event.entity.name == "scanning-radar-powerdump" then
+		for i=#global.ScanningRadars, 1, -1 do
+			for j=1, #global.ScanningRadars[i].dump, 1 do
+				if global.ScanningRadars[i].dump[j].unit_number == event.entity.unit_number then
+					index = i
+					--game.print("mined power")
+					break
+				end
+			end
+			if index ~= -1 then
+				break
+			end
+		end
+	end
+	if index ~= -1 then
+		for j=1, #global.ScanningRadars[index].dump, 1 do
+			global.ScanningRadars[index].dump[j].destroy()
+		end
+		global.ScanningRadars[index].radar.destroy()
+		table.remove(global.ScanningRadars, index)
 		-- unregister when the last is removed
 		if #global.ScanningRadars == 0 then
 			script.on_event(defines.events.on_tick, nil)
-			script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined, defines.events.on_entity_died}, nil)
+			script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined}, nil)
+			script.on_event({defines.events.on_entity_died}, nil)
+		end
+	end
+end
+
+function OnEntityDied(event)
+	local index = -1
+	if event.entity.name == "scanning-radar-connection" then
+		for i=#global.ScanningRadars, 1, -1 do
+			if global.ScanningRadars[i].connection.unit_number == event.entity.unit_number then
+				index = i
+				--game.print("killed connection")
+				break
+			end
+		end
+	elseif event.entity.name == "scanning-radar" then
+		for i=#global.ScanningRadars, 1, -1 do
+			if global.ScanningRadars[i].radar.unit_number == event.entity.unit_number then
+				index = i
+				--game.print("killed radar")
+				break
+			end
+		end
+	elseif event.entity.name == "scanning-radar-powerdump" then
+		for i=#global.ScanningRadars, 1, -1 do
+			for j=1, #global.ScanningRadars[i].dump, 1 do
+				if global.ScanningRadars[i].dump[j].unit_number == event.entity.unit_number then
+					index = i
+					--game.print("killed power")
+					break
+				end
+			end
+			if index ~= -1 then
+				break
+			end
+		end
+	end
+	if index ~= -1 then
+		for j=1, #global.ScanningRadars[index].dump, 1 do
+			global.ScanningRadars[index].dump[j].destroy()
+		end
+		global.ScanningRadars[index].radar.destroy()
+		global.ScanningRadars[index].connection.destroy()
+		table.remove(global.ScanningRadars, index)
+		-- unregister when the last is removed
+		if #global.ScanningRadars == 0 then
+			script.on_event(defines.events.on_tick, nil)
+			script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined}, nil)
+			script.on_event({defines.events.on_entity_died}, nil)
 		end
 	end
 end
@@ -416,7 +493,8 @@ local function init_events()
 	script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, OnEntityCreated)
 	if global.ScanningRadars and next(global.ScanningRadars) then
 		script.on_event(defines.events.on_tick, OnTick)
-		script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined, defines.events.on_entity_died}, OnEntityRemoved)
+		script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined}, OnEntityMined)
+		script.on_event({defines.events.on_entity_died}, OnEntityDied)
 	end
 end
 
