@@ -11,7 +11,7 @@ Scanning too much map area can bloat your game. See [DeleteEmptyChunks](https://
 
 ##Version History:
 
-###v0.2.9 (2018-05-??)
+###v0.2.9 (2018-06-17)
   * Invalid entity was referenced when hidden entity destroyed
 
 ###v0.2.8 (2018-05-13)
