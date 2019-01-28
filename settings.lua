@@ -12,7 +12,7 @@ data:extend({
     type = "int-setting",
     name = "ScanningRadar_speed",
     setting_type = "runtime-global",
-    minimum_value = 1,
+    minimum_value = 0,
     maximum_value = 10,
     default_value = 5,
     order = "2"
@@ -22,7 +22,7 @@ data:extend({
     name = "ScanningRadar_direction",
     setting_type = "runtime-global",
     default_value = "Counterclockwise",
-	allowed_values = { "Counterclockwise", "Clockwise" },
+    allowed_values = { "Counterclockwise", "Clockwise" },
     order = "3"
   },
   {
@@ -32,5 +32,4 @@ data:extend({
     default_value = true,
     order = "4"
   }
-
 })

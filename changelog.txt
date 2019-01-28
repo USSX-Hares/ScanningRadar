@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2019-01-27
+  Bugfixes:
+    - Corrected behavior when begin and end angles are constrained
+  Minor Features:
+    - Changed minimum speed in mod options to zero to disable until given a signal
+    - Added signal information to mouse-over of item and recipe
+---------------------------------------------------------------------------------------------------
 Version: 0.2.9
 Date: 2018-06-17
   Bugfixes:

@@ -11,6 +11,11 @@ Scanning too much map area can bloat your game. See [DeleteEmptyChunks](https://
 
 ##Version History:
 
+###v0.3.0 (2019-01-27)
+  * Corrected behavior when begin and end angles are constrained
+  * Changed minimum speed in mod options to zero to disable until given a signal
+  * Added signal information to mouse-over of item and recipe
+
 ###v0.2.9 (2018-06-17)
   * Invalid entity was referenced when hidden entity destroyed
 

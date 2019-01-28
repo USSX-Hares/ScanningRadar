@@ -184,11 +184,12 @@ function read_signals(radar)
 		radar.state.oscillate = true
 	end
 	-- set speed
-	if values.s == 0 then
-		values.s = settings.global["ScanningRadar_speed"].value
-	end
-	if values.s >= 1 and values.s <= 10 then
+	if values.s <= 0 then
+		radar.state.speed = settings.global["ScanningRadar_speed"].value
+	elseif values.s >= 1 and values.s <= 10 then
 		radar.state.speed = values.s
+	elseif values.s > 10 then
+		radar.state.speed = 10
 	end
 end
 
@@ -276,6 +277,32 @@ function scan_next(radar)
 	local entity = radar.radar
 	local state = radar.state
 	local enabled = is_pump_enabled(radar.connection)
+	
+	-- requested feature, return to start when enabled
+	if not state.enabled and state.speed > 0 then
+		if state.constrained then
+			state.angle = state.start
+			if state.oscillate then
+				state.direction = -1
+				if settings.global["ScanningRadar_direction"].value == "Clockwise" then
+					state.direction = 1
+				end
+			end
+		else
+			state.angle = 0
+		end
+		state.previous = state.angle + state.step
+		if state.direction == 1 then 
+			state.previous = state.angle - state.step
+		end
+		radar.state.enabled = true
+	elseif state.enabled and state.speed == 0 then
+		radar.state.enabled = false
+	end
+	if not radar.state.enabled then
+		enabled = false
+	end
+	
 	for i=1, #radar.dump, 1 do
 		radar.dump[i].active = enabled
 	end
@@ -314,26 +341,51 @@ function scan_next(radar)
 			local new_angle = state.angle + step * state.direction
 			-- is the angle constrained?
 			if state.constrained then
-				local a = state.start < state.stop
-				local b = state.direction > 0
-				local c = new_angle < state.start
-				local d = new_angle > state.stop
-				if b and d and (a or (not a and c)) then
-					if state.oscillate then
+				local a = state.direction > 0 -- is clockwise
+				local b = state.start > state.stop
+				local c = new_angle < state.start -- is before start
+				local d = new_angle > state.stop -- is after stop
+				if state.oscillate then
+					local e = settings.global["ScanningRadar_direction"].value == "Clockwise"
+					if     e     and b     and a     and d     and c     then
 						radar.state.direction = -1
 						new_angle = state.stop
 						radar.state.previous = new_angle + state.step
-					else
-						new_angle = state.start
-						radar.state.previous = new_angle - state.step
-					end
-				elseif not b and c and (a or (not a and d)) then
-					if state.oscillate then
+					elseif e     and b     and not a and c     and d     then
 						radar.state.direction = 1
 						new_angle = state.start
 						radar.state.previous = new_angle - state.step
-					else
+					elseif e     and not b and a     and d               then
+						radar.state.direction = -1
 						new_angle = state.stop
+						radar.state.previous = new_angle + state.step
+					elseif e     and not b and not a and c               then
+						radar.state.direction = 1
+						new_angle = state.start
+						radar.state.previous = new_angle - state.step
+					elseif not e and b     and a     and not c           then
+						radar.state.direction = -1
+						new_angle = state.start
+						radar.state.previous = new_angle + state.step
+					elseif not e and b     and not a and not d           then
+						radar.state.direction = 1
+						new_angle = state.stop
+						radar.state.previous = new_angle - state.step
+					elseif not e and not b and a     and not c and not d then
+						radar.state.direction = -1
+						new_angle = state.start
+						radar.state.previous = new_angle + state.step
+					elseif not e and not b and not a and not d and not c then
+						radar.state.direction = 1
+						new_angle = state.stop
+						radar.state.previous = new_angle - state.step
+					end
+				else 
+					if (a and b and c and d) or (a and not b and (c or d)) then -- clockwise, out of bounds
+						new_angle = state.start
+						radar.state.previous = new_angle - state.step
+					elseif (not a and not b and not c and not d) or (not a and b and (not c or not d)) then -- counterclockwise, out of bounds
+						new_angle = state.start
 						radar.state.previous = new_angle + state.step
 					end
 				end
@@ -459,13 +511,17 @@ function InitializeState(radar)
 	    stop = 0,
 	    speed = settings.global["ScanningRadar_speed"].value,
 	    counter = 0,
-	    charting = 0
+	    charting = 0,
+	    enabled = 1
 	}
 	if settings.global["ScanningRadar_direction"].value == "Clockwise" then
 		state.direction = 1
 		state.previous = -state.step
 	else
 		state.previous = state.step
+	end
+	if state.speed == 0 then
+		state.enabled = false
 	end
 	return state
 end
