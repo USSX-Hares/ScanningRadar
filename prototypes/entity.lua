@@ -276,7 +276,7 @@ data:extend({
         wire_pins_shadow = {
           draw_as_shadow = true,
           filename = "__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png",
-          height = 56,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 168
+          height = 54,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 162
         }
       },
       {
@@ -310,7 +310,7 @@ data:extend({
         wire_pins_shadow = {
           draw_as_shadow = true,
           filename = "__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png",
-          height = 56,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 168
+          height = 54,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 162
         }
       },
       {
@@ -344,7 +344,7 @@ data:extend({
         wire_pins_shadow = {
           draw_as_shadow = true,
           filename = "__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png",
-          height = 56,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 168
+          height = 54,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 162
         }
       },
       {
@@ -378,7 +378,7 @@ data:extend({
         wire_pins_shadow = {
           draw_as_shadow = true,
           filename = "__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png",
-          height = 56,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 168
+          height = 54,priority = "low",scale = 0.5,shift = {-1.125,-0.296875},width = 70,x = 0,y = 162
         }
       }
     },

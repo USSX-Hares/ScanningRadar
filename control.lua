@@ -157,8 +157,14 @@ function read_signals(radar)
 		values.r = 500
 	end
 	if values.r > 0 then
+		if radar.state.radius ~= values.r * 32 then
+			radar.state.charting = 0
+		end
 		radar.state.radius = values.r * 32
 		radar.state.step = 1 / values.r
+	end
+	if radar.state.radius ~= values.r * 32 then
+		radar.state.charting = 0
 	end
 	-- constrain angle
 	if values.b ~= 0 or values.e ~= 0 then

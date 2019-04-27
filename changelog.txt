@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.1
+Date: 2019-03-24
+  Changes:
+    - Updated for 0.17
+  Bugfixes:
+    - Scan no longer stalls when radius is changed while new chunks are being charted
+---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2019-01-27
   Bugfixes:
