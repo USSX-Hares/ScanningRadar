@@ -3,9 +3,9 @@ data:extend({
     type = "int-setting",
     name = "ScanningRadar_radius",
     setting_type = "runtime-global",
-    minimum_value = 2,
-    maximum_value = 25,
-    default_value = 18,
+    minimum_value = 16,
+    maximum_value = 1000,
+    default_value = 576,
     order = "1"
   },
   {

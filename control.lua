@@ -1,3 +1,10 @@
+local tau = 6.2831853071796
+local INSIDE = 0 -- 0000
+local LEFT   = 1 -- 0001
+local RIGHT  = 2 -- 0010
+local BOTTOM = 4 -- 0100
+local TOP    = 8 -- 1000
+
 function OnEntityCreated(event)
 	if event.created_entity.name == "scanning-radar" then
 		local connection = event.created_entity.surface.create_entity{name = "scanning-radar-connection", position = event.created_entity.position, force = event.created_entity.force}
@@ -106,7 +113,7 @@ function OnEntityDied(event)
 	end
 end
 
--- Stepping from tick modulo, with stride, adapted from eradicator
+-- Stepping from tick modulo, with stride
 function OnTick(event)
 	local update_interval = 3
 	local offset = game.tick % update_interval
@@ -137,34 +144,27 @@ function read_signals(radar)
 	end
 	-- apply signals
 	-- set inside radius and push the outside radius out if needed
-	if values.n < 1 then
-		values.n = 1
+	if values.n < 0 then
+		values.n = 0
 	end
-	if values.n > 499 then
-		values.n = 499
+	if values.n > 19999 then
+		values.n = 19999
 	end
-	radar.state.inner = values.n * 32
-	if radar.state.radius < values.n * 32 or (values.r > 0 and values.r < values.n) then
+	radar.state.inner = values.n
+	if radar.state.radius < values.n or (values.r > 0 and values.r < values.n) then
 		values.r = values.n + 1
 	end
 	-- set outside radius and max step size
-	local tau = 6.2831853071796
-	if values.r <= 0 and radar.state.radius ~= settings.global["ScanningRadar_radius"].value * 32 then
+	if values.r <= 0 and radar.state.radius ~= settings.global["ScanningRadar_radius"].value then
 		values.r = settings.global["ScanningRadar_radius"].value
 	end
 	-- Ok, thats big enough.
-	if values.r > 500 then
-		values.r = 500
+	if values.r > 20000 then
+		values.r = 20000
 	end
 	if values.r > 0 then
-		if radar.state.radius ~= values.r * 32 then
-			radar.state.charting = 0
-		end
-		radar.state.radius = values.r * 32
-		radar.state.step = 1 / values.r
-	end
-	if radar.state.radius ~= values.r * 32 then
-		radar.state.charting = 0
+		radar.state.radius = values.r
+		radar.state.step = 1 / (values.r / 32)
 	end
 	-- constrain angle
 	if values.b ~= 0 or values.e ~= 0 then
@@ -252,7 +252,7 @@ function make_power_dump(radar)
 	-- =9.824379*(PI()*$N$8^2-PI()*$M$8^2)*P9/5/1000
 	local constant = .00617283937849
 	local dump_size = 2.5
-	local i = radar.state.inner / 32 - 1
+	local i = radar.state.inner / 32
 	local o = radar.state.radius / 32
 	local s = radar.state.speed
 	local extra = (constant * (o * o - i * i) * s - 10) / dump_size
@@ -277,6 +277,71 @@ function make_power_dump(radar)
 			table.remove(radar.dump, i)
 		end
 	end
+end
+
+function point_region( p, tl, br )
+	local region = INSIDE
+	if p.x < tl.x then
+		region = bit32.bor(region, LEFT)
+	elseif p.x > br.x then
+		region = bit32.bor(region, RIGHT)
+	end
+	if p.y < tl.y then
+		region = bit32.bor(region, TOP)
+	elseif p.y > br.y then
+		region = bit32.bor(region, BOTTOM)
+	end
+	return region
+end
+
+function clip_line( p1, p2, tl, br )
+	p1_region = point_region(p1, tl, br)
+	p2_region = point_region(p2, tl, br)
+	local inbound = false
+	while true do
+		if p1_region == 0 and p2_region == 0 then
+			inbound = true
+			break
+		elseif bit32.band(p1_region, p2_region) ~= 0 then
+			break
+		else
+			local region_out = INSIDE
+			local point = {x=0,y=0}
+			if p1_region ~= INSIDE then
+				region_out = p1_region
+			else
+				region_out = p2_region
+			end
+			if bit32.band(region_out, TOP) ~= 0 then
+        point.x = p1.x + (p2.x - p1.x) * (tl.y - p1.y) / (p2.y - p1.y)
+        point.y = tl.y
+			elseif bit32.band(region_out, BOTTOM) ~= 0 then
+        point.x = p1.x + (p2.x - p1.x) * (br.y - p1.y) / (p2.y - p1.y)
+        point.y = br.y
+			elseif bit32.band(region_out, RIGHT) ~= 0 then
+				point.x = br.x
+				point.y = p1.y + (p2.y - p1.y) * (br.x - p1.x) / (p2.x - p1.x)
+			elseif bit32.band(region_out, LEFT) ~= 0 then
+				point.x = tl.x
+				point.y = p1.y + (p2.y - p1.y) * (tl.x - p1.x) / (p2.x - p1.x)
+			end
+			if region_out == p1_region then
+				p1 = point
+				p1_region = point_region(p1, tl, br)
+			else
+				p2 = point
+				p2_region = point_region(p2, tl, br)
+			end
+		end
+	end
+	--	game.print("=: (" .. string.format("%0.1f",start_p1.x) .. "," .. string.format("%0.1f",start_p1.y) .. ") to (" .. string.format("%0.1f",start_p2.x) .. "," .. string.format("%0.1f",start_p2.y) .. ")")
+	return { inbound=inbound, p1=p1, p2=p2 }
+end
+
+function line_length( p1, p2 )
+	local dx = math.abs(p2.x - p1.x)
+	local dy = math.abs(p2.y - p1.y)
+	return math.sqrt( dx * dx + dy * dy )
 end
 
 function scan_next(radar)
@@ -313,32 +378,48 @@ function scan_next(radar)
 		radar.dump[i].active = enabled
 	end
 	entity.active = enabled
+
 	-- don't scan if the power is low
 	-- check now so the dump still draws power
 	if entity.energy < 160000 then
 		enabled = false
 	end
+
+	-- Remove generated chunks from the backlog
+	if radar.state.uncharted == nil then
+		radar.state.uncharted = {}
+	end
+	for k, position in pairs(radar.state.uncharted) do
+		if entity.surface.is_chunk_generated(position) then
+			radar.state.uncharted[k] = nil
+		end
+	end
+
 	if entity.is_connected_to_electric_network() and enabled then
 		-- plot only when we've rotated far enough to pick up next chunk on outside circumference
 		local fullstep = state.previous + (state.step - .00000001) * state.direction
-		if (state.direction == -1 and state.angle <= fullstep) or (state.direction == 1 and state.angle >= fullstep) then
-			local coa = math.cos(state.angle)
-			local soa = math.sin(state.angle)
-			local near = { x = state.cx + state.inner * coa,
-			               y = state.cy + state.inner * soa}
-			local far = { x = state.cx + state.radius * coa,
-			              y = state.cy + state.radius * soa}
-			if state.charting > 3 then
-				radar.state.charting = radar.state.charting - 3
-			else
-				radar.state.charting = scan_line(entity.force, entity.surface, near.x, near.y, far.x, far.y)
+		if #radar.state.uncharted <= 10 then
+			if (state.direction == -1 and state.angle <= fullstep) or (state.direction == 1 and state.angle >= fullstep) then
+				local coa = math.cos(state.angle)
+				local soa = math.sin(state.angle)
+				local near = { x = state.cx + state.inner * coa,
+				               y = state.cy + state.inner * soa}
+				local far = { x = state.cx + state.radius * coa,
+				              y = state.cy + state.radius * soa}
+				
+				-- Clip to surface limits
+				local max_width = entity.surface.map_gen_settings.width / 2
+				local max_height = entity.surface.map_gen_settings.height / 2
+				line = clip_line( near, far, {x = -max_width, y = -max_height}, {x = max_width, y = max_height} )
+				
+				if line.inbound then
+					local uncharted = scan_line(entity.force, entity.surface, line.p1, line.p2)
+					for _, position in pairs(uncharted) do
+						table.insert(radar.state.uncharted, position)
+					end
+					--game.print( string.format("%05.1f",line_length(line.p1, line.p2)) .. "m @ " ..string.format("%05.1f",state.angle * 360 / tau) .. "°, backlog: " .. #radar.state.uncharted )
+				end
 			end
-			if radar.state.charting < 3 then
-				radar.state.previous = state.angle
-				radar.state.charting = 0
-			end
-		end
-		if radar.state.charting == 0 then
 			-- move at speed
 			local magnitude = 10
 			magnitude = (magnitude + 1) - state.speed / 10 * magnitude
@@ -397,7 +478,6 @@ function scan_next(radar)
 				end
 			end
 			-- wrap around at Tau and zero
-			local tau = 6.2831853071796
 			if new_angle >= tau then
 				new_angle = new_angle - tau
 				radar.state.previous = state.previous - tau
@@ -407,7 +487,12 @@ function scan_next(radar)
 			end
 			-- save back new angle
 			radar.state.angle = new_angle
+		else
+			--game.print( "waiting for " .. #radar.state.uncharted .. " chunks" )
+			--entity.surface.force_generate_chunk_requests()
 		end
+	else
+		--game.print( "Not enough power!" )
 	end
 	-- once every ten updates, refresh dump entities. Better UPS and more certain execution
 	if state.counter >= 10 then
@@ -418,45 +503,55 @@ function scan_next(radar)
 	end
 end
 
-function scan_line(force, surface, x0, y0, x1, y1)
-	if math.abs(y1 - y0) < math.abs(x1 - x0) then
-		if x0 > x1 then
-			return plotLineLow(force, surface, x1, y1, x0, y0)
+function scan_line(force, surface, p1, p2)
+	if math.abs(p2.y - p1.y) < math.abs(p2.x - p1.x) then
+		if p1.x > p2.x then
+			-- 135-180,180-225, O-I
+			return plotLineH(force, surface, p2, p1)
 		else
-			return plotLineLow(force, surface, x0, y0, x1, y1)
+			-- 000-045,315-360, I-O
+			return plotLineH(force, surface, p1, p2)
 		end
 	else
-		if y0 > y1 then
-			return plotLineHigh(force, surface, x1, y1, x0, y0)
+		if p1.y > p2.y then
+			-- 225-270,270-315, O-I
+			return plotLineV(force, surface, p2, p1)
 		else
-			return plotLineHigh(force, surface, x0, y0, x1, y1)
+			-- 045-090,090-135, I-O
+			return plotLineV(force, surface, p1, p2)
 		end
 	end
 end
 
-function plotLineLow(force, surface, x0,y0, x1,y1)
-	local charting = 0
-	local dx = x1 - x0
-	local dy = y1 - y0
+function plotLineH(force, surface, p1, p2)
+	local uncharted = {}
+	local dx = p2.x - p1.x
+	local dy = p2.y - p1.y
 	local yi = 1
 	if dy < 0 then
 		yi = -1
 		dy = -dy
 	end
 	local D = 2*dy - dx
-	local y = y0
+	local y = p1.y
 	local xlow = 1
 	local ylow = 1
 	local xhigh = -1
 	local yhigh = -1
-	for x = x0, x1, 1 do
+	for x = p1.x, p2.x, 1 do
 		if not (x >= xlow and x < xhigh and y >= ylow and y < yhigh) then
-			charting = charting + (not force.is_chunk_charted(surface, {x/32,y/32}) and 1 or 0)
-			force.chart(surface, {{x,y}, {x,y}})
-			xlow = math.floor(x / 32) * 32
-			ylow = math.floor(y / 32) * 32
-			xhigh = xlow + 32
-			yhigh = ylow + 32
+			local chunk_x = math.floor(x/32)
+			local tile_x = chunk_x * 32
+			local chunk_y = math.floor(y/32)
+			local tile_y = chunk_y * 32
+			if not force.is_chunk_charted(surface, {chunk_x,chunk_y}) then
+				table.insert(uncharted, {x=chunk_x,y=chunk_y})
+			end
+			force.chart(surface, {{tile_x,tile_y}, {tile_x,tile_y}})
+			xlow = tile_x
+			ylow = tile_y
+			xhigh = tile_x + 32
+			yhigh = tile_y + 32
 		end
 		if D > 0 then
 			y = y + yi
@@ -464,32 +559,38 @@ function plotLineLow(force, surface, x0,y0, x1,y1)
 		end
 		D = D + 2*dy
 	end
-	return charting
+	return uncharted
 end
 
-function plotLineHigh(force, surface, x0,y0, x1,y1)
-	local charting = 0
-	local dx = x1 - x0
-	local dy = y1 - y0
+function plotLineV(force, surface, p1, p2)
+	local uncharted = {}
+	local dx = p2.x - p1.x
+	local dy = p2.y - p1.y
 	local xi = 1
 	if dx < 0 then
 		xi = -1
 		dx = -dx
 	end
 	local D = 2 * dx - dy
-	local x = x0
+	local x = p1.x
 	local xlow = 1
 	local ylow = 1
 	local xhigh = -1
 	local yhigh = -1
-	for y=y0, y1, 1 do
+	for y=p1.y, p2.y, 1 do
 		if not (x >= xlow and x < xhigh and y >= ylow and y < yhigh) then
-			charting = charting + (not force.is_chunk_charted(surface, {x/32,y/32}) and 1 or 0)
-			force.chart(surface, {{x,y}, {x,y}})
-			xlow = math.floor(x / 32) * 32
-			ylow = math.floor(y / 32) * 32
-			xhigh = xlow + 32
-			yhigh = ylow + 32
+			local chunk_x = math.floor(x/32)
+			local tile_x = chunk_x * 32
+			local chunk_y = math.floor(y/32)
+			local tile_y = chunk_y * 32
+			if not force.is_chunk_charted(surface, {chunk_x,chunk_y}) then
+				table.insert(uncharted, {x=chunk_x,y=chunk_y})
+			end
+			force.chart(surface, {{tile_x,tile_y}, {tile_x,tile_y}})
+			xlow = tile_x
+			ylow = tile_y
+			xhigh = tile_x + 32
+			yhigh = tile_y + 32
 		end
 		if D > 0 then
 			x = x + xi
@@ -497,19 +598,19 @@ function plotLineHigh(force, surface, x0,y0, x1,y1)
 		end
 		D = D + 2 * dx
 	end
-	return charting
+	return uncharted
 end
 
 function InitializeState(radar)
 	-- build state of new radar with defaults
 	local state = {
-	    cx = math.floor(radar.position.x / 32) * 32 + 16,
-	    cy = math.floor(radar.position.y / 32) * 32 + 16,
-	    radius = settings.global["ScanningRadar_radius"].value * 32,
-	    inner = 1 * 32,
+	    cx = radar.position.x,
+	    cy = radar.position.y,
+	    radius = settings.global["ScanningRadar_radius"].value,
+	    inner = 0,
 	    angle = 0,
 	    previous = 0,
-	    step = 1 / settings.global["ScanningRadar_radius"].value,
+	    step = 1 / (settings.global["ScanningRadar_radius"].value / 32),
 	    direction = -1,
 	    constrained = false,
 	    oscillate = false,
@@ -517,7 +618,7 @@ function InitializeState(radar)
 	    stop = 0,
 	    speed = settings.global["ScanningRadar_speed"].value,
 	    counter = 0,
-	    charting = 0,
+	    uncharted = {},
 	    enabled = 1
 	}
 	if settings.global["ScanningRadar_direction"].value == "Clockwise" then

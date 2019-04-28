@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.2
+Date: 2019-04-27
+  Changes:
+    - Radius values now use tiles rather than chunks!
+    - Use actual backlog of chunks to be generated to retard scan
+  Bugfixes:
+    - Corrected issue with height/width limited surfaces
+---------------------------------------------------------------------------------------------------
 Version: 0.3.1
 Date: 2019-03-24
   Changes:

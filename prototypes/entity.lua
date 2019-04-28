@@ -22,7 +22,7 @@ data:extend({
     collision_box = {{-1.2, -1.2}, {1.2, 1.2}},
     energy_per_sector = "100MJ",
     max_distance_of_sector_revealed = 0,
-    max_distance_of_nearby_sector_revealed = 1,
+    max_distance_of_nearby_sector_revealed = 0,
     energy_per_nearby_scan = "100kJ",
     energy_source =
     {
