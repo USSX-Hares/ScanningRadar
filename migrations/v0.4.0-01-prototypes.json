@@ -1,6 +1,7 @@
 {
     "entity":
     [
+        [ "scanning-radar-powerdump", "scanning-radar-power-unit" ],
         [ "scanning-radar-connection", "scanning-radar-connector-dummy" ]
     ]
 }

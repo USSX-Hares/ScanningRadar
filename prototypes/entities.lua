@@ -61,33 +61,20 @@ local power_unit =
         usage_priority = 'secondary-input',
     },
     energy_usage = '2500.1kW',
-    pictures = NO_SPRITE
+    pictures = NO_SPRITE,
+    collision_mask = { },
 }
 
 
 --- @type LuaEntityPrototype
 local dummy_connector =
 {
-    type = 'pump',
     name = Names.dummy_connector,
     icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.connector),
     icon_size = 32,
     flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable' },
+    collision_mask = { },
     minable = nil,
-    fluid_box =
-    {
-        base_area = 1,
-        pipe_covers = pipecoverspictures(),
-        pipe_connections = { },
-    },
-    energy_source =
-    {
-        type = 'void',
-        usage_priority = 'secondary-input',
-        emissions = 0,
-    },
-    energy_usage = '1W',
-    pumping_speed = 0.01,
     animations =
     {
         north = NO_SPRITE,
@@ -95,364 +82,12 @@ local dummy_connector =
         south = NO_SPRITE,
         west = NO_SPRITE,
     },
-    circuit_wire_connection_points =
-    {
-        {
-            shadow = { green = { -1.28125, -0.40625 },  red = { -1.34375, -0.234375 } },
-            wire   = { green = { -1.45313, -0.046875 }, red = { -1.375, -0.21875 } },
-        },
-        {
-            shadow = { green = { -1.28125, -0.40625 },  red = { -1.34375, -0.234375 } },
-            wire   = { green = { -1.45313, -0.046875 }, red = { -1.375, -0.21875 } },
-        },
-        {
-            shadow = { green = { -1.28125, -0.40625 },  red = { -1.34375, -0.234375 } },
-            wire   = { green = { -1.45313, -0.046875 }, red = { -1.375, -0.21875 } },
-        },
-        {
-            shadow = { green = { -1.28125, -0.40625 },  red = { -1.34375, -0.234375 } },
-            wire   = { green = { -1.45313, -0.046875 }, red = { -1.375, -0.21875 } },
-        },
-    },
-    circuit_connector_sprites =
-    {
-        {
-            blue_led_light_offset = { -1.48438, -0.25 },
-            connector_main =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04a-base-sequence.png',
-                height = 50,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.390625 },
-                width = 52,
-                x = 0,
-                y = 150,
-            },
-            led_blue =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04e-blue-LED-on-sequence.png',
-                height = 60,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 60,
-                x = 0,
-                y = 180,
-            },
-            led_blue_off =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04f-blue-LED-off-sequence.png',
-                height = 44,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 46,
-                x = 0,
-                y = 132,
-            },
-            led_green =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04h-green-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            led_light = { intensity = 0.8, size = 0.9 },
-            led_red =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04i-red-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            red_green_led_light_offset = { -1.46875, -0.359375 },
-            wire_pins =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04c-wire-sequence.png',
-                height = 58,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 62,
-                x = 0,
-                y = 174,
-            },
-            wire_pins_shadow =
-            {
-                draw_as_shadow = true,
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png',
-                height = 54,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.125, -0.296875 },
-                width = 70,
-                x = 0,
-                y = 162,
-            },
-        },
-        {
-            blue_led_light_offset = { -1.48438, -0.25 },
-            connector_main =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04a-base-sequence.png',
-                height = 50,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.390625 },
-                width = 52,
-                x = 0,
-                y = 150,
-            },
-            led_blue =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04e-blue-LED-on-sequence.png',
-                height = 60,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 60,
-                x = 0,
-                y = 180,
-            },
-            led_blue_off =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04f-blue-LED-off-sequence.png',
-                height = 44,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 46,
-                x = 0,
-                y = 132,
-            },
-            led_green =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04h-green-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            led_light = {intensity = 0.8,
-            size = 0.9},
-            led_red =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04i-red-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            red_green_led_light_offset = { -1.46875, -0.359375 },
-            wire_pins =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04c-wire-sequence.png',
-                height = 58,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 62,
-                x = 0,
-                y = 174,
-            },
-            wire_pins_shadow =
-            {
-                draw_as_shadow = true,
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png',
-                height = 54,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.125, -0.296875 },
-                width = 70,
-                x = 0,
-                y = 162,
-            },
-        },
-        {
-            blue_led_light_offset = { -1.48438, -0.25 },
-            connector_main =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04a-base-sequence.png',
-                height = 50,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.390625 },
-                width = 52,
-                x = 0,
-                y = 150,
-            },
-            led_blue =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04e-blue-LED-on-sequence.png',
-                height = 60,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 60,
-                x = 0,
-                y = 180,
-            },
-            led_blue_off =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04f-blue-LED-off-sequence.png',
-                height = 44,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 46,
-                x = 0,
-                y = 132,
-            },
-            led_green =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04h-green-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            led_light = {intensity = 0.8,
-            size = 0.9},
-            led_red =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04i-red-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            red_green_led_light_offset = { -1.46875, -0.359375 },
-            wire_pins =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04c-wire-sequence.png',
-                height = 58,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 62,
-                x = 0,
-                y = 174,
-            },
-            wire_pins_shadow =
-            {
-                draw_as_shadow = true,
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png',
-                height = 54,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.125, -0.296875 },
-                width = 70,
-                x = 0,
-                y = 162,
-            },
-        },
-        {
-            blue_led_light_offset = { -1.48438, -0.25 },
-            connector_main =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04a-base-sequence.png',
-                height = 50,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.390625 },
-                width = 52,
-                x = 0,
-                y = 150,
-            },
-            led_blue =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04e-blue-LED-on-sequence.png',
-                height = 60,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 60,
-                x = 0,
-                y = 180,
-            },
-            led_blue_off =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04f-blue-LED-off-sequence.png',
-                height = 44,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 46,
-                x = 0,
-                y = 132,
-            },
-            led_green =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04h-green-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            led_light = { intensity = 0.8, size = 0.9 },
-            led_red =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04i-red-LED-sequence.png',
-                height = 46,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 48,
-                x = 0,
-                y = 138,
-            },
-            red_green_led_light_offset = { -1.46875, -0.359375 },
-            wire_pins =
-            {
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04c-wire-sequence.png',
-                height = 58,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.28125, -0.421875 },
-                width = 62,
-                x = 0,
-                y = 174,
-            },
-            wire_pins_shadow =
-            {
-                draw_as_shadow = true,
-                filename = '__base__/graphics/entity/circuit-connector/hr-ccm-universal-04d-wire-shadow-sequence.png',
-                height = 54,
-                priority = 'low',
-                scale = 0.5,
-                shift = { -1.125, -0.296875 },
-                width = 70,
-                x = 0,
-                y = 162,
-            },
-        },
-    },
     circuit_wire_max_distance = 9,
 }
+dummy_connector = utils.update_prototype(flib.copy_prototype(data.raw['pump']['pump'], Names.dummy_connector), dummy_connector)
+dummy_connector.energy_source.type = 'void'
+dummy_connector.minable = nil
+dummy_connector.next_upgrade = nil
 
 
 --- @type LuaEntityPrototype
@@ -461,6 +96,10 @@ local connector =
     icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.connector),
     icon_size = 32,
     signal_to_color_mapping = { },
+    selection_box = { {-0.5, -0.5}, {0.5, 0.5} },
+    selection_priority = (radar.selection_priority or 50) + 10,
+    collision_box = { { -0.15, -0.15 }, { 0.15, 0.15 } },
+    collision_mask = { },
     always_on = true,
 }
 connector = utils.update_prototype(flib.copy_prototype(data.raw['lamp']['small-lamp'], Names.connector), connector)

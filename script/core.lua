@@ -362,8 +362,8 @@ function impl.scan_next(radar)
 		enabled = false
 	end
 	
-	for i=1, #radar.power_units, 1 do
-		radar.power_units[i].active = enabled
+	for _, power_unit in pairs(radar.power_units)
+	do power_unit.active = enabled
 	end
 	entity.active = enabled
 
