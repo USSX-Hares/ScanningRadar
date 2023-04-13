@@ -1,5 +1,3 @@
-local Names = require('util.names')
-
 --- @module impl
 impl = { }
 

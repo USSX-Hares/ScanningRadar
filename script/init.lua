@@ -1,5 +1,4 @@
-local Names = require('util.names')
-local getters = require('impl.getters')
+local utils = require('script.utils')
 
 --- @module Init
 local init = { }
@@ -61,7 +60,7 @@ function init.add_radar_to_index(radar, connector, power_units, state)
 	local data =
 	{
 		radar = radar,
-		connector = connector or radar.surface.create_entity { name=Names.connector, position=getters.get_radar_connector_position(radar.position, radar.direction), force=radar.force },
+		connector = connector or radar.surface.create_entity { name=Names.connector, position= utils.get_radar_connector_position(radar.position, radar.direction), force=radar.force },
 		power_units = power_units or { },
 		state = state or init.init_state(radar)
 	}
@@ -85,7 +84,7 @@ function init.init_radars()
 		for _, radar in pairs(radars) do
 			log(string.format(" * Reinitializing radar #%i", radar.unit_number))
 			
-			local connector = surface.find_entity(Names.connector, getters.get_radar_connector_position(radar.position, radar.direction))
+			local connector = surface.find_entity(Names.connector, utils.get_radar_connector_position(radar.position, radar.direction))
 			local power_units = surface.find_entities_filtered { name=Names.power_unit, position=radar.position, force=radar.force }
 			init.add_radar_to_index(radar, connector, power_units)
 		end

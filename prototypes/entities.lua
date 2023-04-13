@@ -1,26 +1,4 @@
-require ('__core__.lualib.circuit-connector-sprites')
-local hit_effects = require ('__base__.prototypes.entity.hit-effects')
-local sounds = require('__base__.prototypes.entity.sounds')
-local Names = require('util.names')
-local Resources = require('util.resources')
-
-flib = require('__flib__.data-util')
-
-----
---- Updates the given prototype with a patch.
---- Updates are in-place
----
---- @param base LuaEntityPrototype Base prototype to be patched
---- @param patch table Patch to apply
---- @return LuaEntityPrototype The updated instance
-----
-local function update_prototype(base, patch)
-    for k, v in pairs(patch)
-    do base[k] = v
-    end
-    
-    return base
-end
+local utils = require('script.utils')
 
 --- @type Sprite
 local NO_SPRITE =
@@ -53,7 +31,7 @@ local radar =
     energy_usage = '10.1MW',
     radius_minimap_visualisation_color = { r = 0.059, g = 0.092, b = 0.235, a = 0.275 },
 }
-radar = update_prototype(flib.copy_prototype(data.raw['radar']['radar'], Names.radar), radar)
+radar = utils.update_prototype(flib.copy_prototype(data.raw['radar']['radar'], Names.radar), radar)
 
 
 --- @type LuaEntityPrototype
@@ -485,7 +463,7 @@ local connector =
     signal_to_color_mapping = { },
     always_on = true,
 }
-connector = update_prototype(flib.copy_prototype(data.raw['lamp']['small-lamp'], Names.connector), connector)
+connector = utils.update_prototype(flib.copy_prototype(data.raw['lamp']['small-lamp'], Names.connector), connector)
 connector.energy_source.type = 'void'
 connector.minable = nil
 connector.next_upgrade = nil

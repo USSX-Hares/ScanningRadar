@@ -1,7 +1,22 @@
-Names = require('util.names')
+--- @module Utils
+utils = { }
 
---- @module Getters
-getters = { }
+
+----
+--- Updates the given prototype with a patch.
+--- Updates are in-place
+---
+--- @param base LuaEntityPrototype Base prototype to be patched
+--- @param patch table Patch to apply
+--- @return LuaEntityPrototype The updated instance
+----
+function utils.update_prototype(base, patch)
+    for k, v in pairs(patch)
+    do base[k] = v
+    end
+    
+    return base
+end
 
 ----
 --- Calculates and returns radar connection position, for a given coordinates and orientation.
@@ -10,7 +25,7 @@ getters = { }
 --- @param direction string
 --- @return MapPosition
 ----
-function getters.get_radar_connector_position(position, direction )
+function utils.get_radar_connector_position(position, direction )
 	local dx, dy
 	
 	if (direction == defines.direction.north)
@@ -34,7 +49,7 @@ end
 --- @param radar_entity LuaEntity
 --- @return number
 ----
-function getters.find_radar_index(radar_entity)
+function utils.find_radar_index(radar_entity)
 	if radar_entity.name == Names.connector then
 		for i=#global.ScanningRadars, 1, -1 do
 			if global.ScanningRadars[i].connector.unit_number == radar_entity.unit_number then
@@ -60,4 +75,4 @@ function getters.find_radar_index(radar_entity)
 	return -1
 end
 
-return getters
+return utils

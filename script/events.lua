@@ -1,7 +1,6 @@
-local Names = require('util.names')
-local impl = require('impl.core')
-local getters = require('impl.getters')
-local init = require('init')
+local impl = require('script.core')
+local utils = require('script.utils')
+local init = require('script.init')
 
 local UPDATE_INTERVAL = 3
 
@@ -72,7 +71,7 @@ end
 --- @param event { entity: LuaEntity }
 ----
 function events.OnEntityRemoved(event)
-	local index = getters.find_radar_index(event.entity)
+	local index = utils.find_radar_index(event.entity)
 	if (index == 0) then return end
 	delete_radar(index, event.entity)
 end

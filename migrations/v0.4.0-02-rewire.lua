@@ -6,8 +6,8 @@ then
     return
 end
 
-local init = require('init')
-local getters = require('impl.getters')
+local init = require('script.init')
+local getters = require('script.utils')
 
 init.init_radars()
 

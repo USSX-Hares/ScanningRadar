@@ -1,5 +1,3 @@
-local Names = require('util.names')
-
 local radar = 
 {
     type = 'recipe',

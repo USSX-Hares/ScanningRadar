@@ -1,10 +1,10 @@
+Names = require('script.descriptors.names')
+
+local init = require('script.init')
+local events = require('script.events')
+
 do
 	---- Init ----
-	
-	
-	local init = require('init')
-	local events = require('events')
-	
 	script.on_load(function()
 		events.register_events(true)
 	end)

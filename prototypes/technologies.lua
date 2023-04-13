@@ -1,6 +1,3 @@
-local Names = require('util.names')
-local Resources = require('util.resources')
-
 local tech =
 {
     type = 'technology',
