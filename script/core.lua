@@ -1,3 +1,5 @@
+local init = require('script.init')
+
 --- @module impl
 impl = { }
 
@@ -77,7 +79,7 @@ local function make_power_dump(radar)
 	if extra > #radar.power_units then
 		--game.print( "need " .. extra - #radar.dump .. " more entities")
 		for i=1, extra - #radar.power_units, 1 do
-			local sink = radar.radar.surface.create_entity{ name = Names.power_unit, position = radar.radar.position, force = radar.radar.force}
+			local sink = init.create_power_unit(radar.radar)
 			table.insert(radar.power_units, sink)
 		end
 	elseif extra < #radar.power_units then

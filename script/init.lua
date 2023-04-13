@@ -44,6 +44,49 @@ function init.init_state(radar)
 end
 
 ----
+--- Creates a connector for a given radar.
+--- 
+--- @param radar LuaEntity
+--- @return LuaEntity
+----
+function init.create_connector(radar)
+	--- @type LuaEntity
+	local connector = radar.surface.create_entity
+	{
+		name = Names.connector,
+		position = utils.get_radar_connector_position(radar.position, radar.direction),
+		force = radar.force,
+	}
+	
+	connector.minable = false
+	connector.destructible = false
+	
+	return connector
+end
+
+----
+--- Creates a power unit near the given radar.
+--- 
+--- @param radar LuaEntity
+--- @return LuaEntity
+----
+function init.create_power_unit(radar)
+	--- @type LuaEntity
+	local power_unit = radar.surface.create_entity
+	{
+		name = Names.power_unit,
+		position = radar.position,
+		force = radar.force,
+	}
+	
+	power_unit.operable = false
+	power_unit.minable = false
+	power_unit.destructible = false
+	
+	return power_unit
+end
+
+----
 --- Adds the given radar entity to the global data.
 --- Optionally creates connector, power units, state.
 --- All parameters except for `radar` are optional.
@@ -60,7 +103,7 @@ function init.add_radar_to_index(radar, connector, power_units, state)
 	local data =
 	{
 		radar = radar,
-		connector = connector or radar.surface.create_entity { name=Names.connector, position= utils.get_radar_connector_position(radar.position, radar.direction), force=radar.force },
+		connector = connector or init.create_connector(radar),
 		power_units = power_units or { },
 		state = state or init.init_state(radar)
 	}
