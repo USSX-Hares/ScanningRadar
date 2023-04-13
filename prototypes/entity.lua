@@ -1,3 +1,6 @@
+require ('__core__.lualib.circuit-connector-sprites')
+local hit_effects = require ('__base__.prototypes.entity.hit-effects')
+local sounds = require('__base__.prototypes.entity.sounds')
 local Names = require('util.names')
 local Resources = require('util.resources')
 
@@ -24,7 +27,7 @@ local radar =
     {
         hardness = 0.2,
         mining_time = 0.5,
-        result = nil,
+        result = 'scanning-radar',
     },
     max_health = 250,
     corpse = 'big-remnants',
@@ -34,6 +37,7 @@ local radar =
         { type = 'impact', percent = 30 },
     },
     collision_box = { { -1.2, -1.2 }, { 1.2, 1.2 } },
+    selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
     energy_per_sector = '100MJ',
     max_distance_of_sector_revealed = 0,
     max_distance_of_nearby_sector_revealed = 0,
@@ -134,10 +138,10 @@ local radar =
 local power_unit =
 {
     type = 'radar',
-    name = Names.power_dump,
-    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.power_dump),
+    name = Names.power_unit,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.power_unit),
     icon_size = 32,
-    flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable' },
+    flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable', 'no-copy-paste' },
     order = 'a-a-a',
     minable =
     {
@@ -147,7 +151,6 @@ local power_unit =
     },
     max_health = 1,
     corpse = 'big-remnants',
-    collision_box = { { -1.2, -1.2 }, { 1.2, 1.2 } },
     energy_per_sector = '1J',
     max_distance_of_sector_revealed = 0,
     max_distance_of_nearby_sector_revealed = 0,
@@ -162,24 +165,14 @@ local power_unit =
 }
 
 --- @type LuaEntityPrototype
-local connector =
+local dummy_connector =
 {
     type = 'pump',
-    name = Names.connector,
+    name = Names.dummy_connector,
     icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.connector),
     icon_size = 32,
-    flags = { 'placeable-neutral', 'player-creation' },
-    order = 'a-a-b',
-    minable = { hardness = 0.2, mining_time = 0.5, result = 'scanning-radar' },
-    max_health = 250,
-    corpse = 'big-remnants',
-    collision_box = { { -1.2, -1.2 }, { 1.2, 1.2 } },
-    selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
-    resistances =
-    {
-        { type = 'fire', percent = 70 },
-        { type = 'impact', percent = 30 },
-    },
+    flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable' },
+    minable = nil,
     fluid_box =
     {
         base_area = 1,
@@ -188,89 +181,20 @@ local connector =
     },
     energy_source =
     {
-        type = 'electric',
+        type = 'void',
         usage_priority = 'secondary-input',
         emissions = 0,
     },
-    energy_usage = '10MW',
-    pumping_speed = 0.16666667,
-    vehicle_impact_sound =  { filename = '__base__/sound/car-metal-impact.ogg', volume = 0.65 },
+    energy_usage = '1W',
+    pumping_speed = 0.01,
     -- yes, this causes a graphical glitch where the entity images overlap but it's 
     -- better than having a blank box in the mouse over window
     animations =
     {
-        north =
-        {
-            filename = Resources.get_graphics_item(Resources.graphics_item_types.Sprite, Names.radar),
-            width = 98,
-            height = 128,
-            frame_count = 1,
-            shift = util.by_pixel(1, -16),
-            hr_version =
-            {
-                filename = Resources.get_graphics_item(Resources.graphics_item_types.HDSprite, Names.radar),
-                priority = 'low',
-                width = 196,
-                height = 254,
-                frame_count = 1,
-                shift = util.by_pixel(1, -16),
-                scale = 0.5,
-            },
-        },
-        east =
-        {
-            filename = Resources.get_graphics_item(Resources.graphics_item_types.Sprite, Names.radar),
-            width = 98,
-            height = 128,
-            frame_count = 1,
-            shift = util.by_pixel(1, -16),
-            hr_version =
-            {
-                filename = Resources.get_graphics_item(Resources.graphics_item_types.HDSprite, Names.radar),
-                priority = 'low',
-                width = 196,
-                height = 254,
-                frame_count = 1,
-                shift = util.by_pixel(1, -16),
-                scale = 0.5,
-            },
-        },
-        south =
-        {
-            filename = Resources.get_graphics_item(Resources.graphics_item_types.Sprite, Names.radar),
-            width = 98,
-            height = 128,
-            frame_count = 1,
-            shift = util.by_pixel(1, -16),
-            hr_version =
-            {
-                filename = Resources.get_graphics_item(Resources.graphics_item_types.HDSprite, Names.radar),
-                priority = 'low',
-                width = 196,
-                height = 254,
-                frame_count = 1,
-                shift = util.by_pixel(1, -16),
-                scale = 0.5,
-            },
-        },
-        west =
-        {
-            filename = Resources.get_graphics_item(Resources.graphics_item_types.Sprite, Names.radar),
-            width = 98,
-            height = 128,
-            frame_count = 1,
-            shift = util.by_pixel(1, -16),
-            hr_version =
-            {
-                filename = Resources.get_graphics_item(Resources.graphics_item_types.HDSprite, Names.radar),
-                priority = 'low',
-                width = 196,
-                height = 254,
-                frame_count = 1,
-                shift = util.by_pixel(1, -16),
-                scale = 0.5,
-            },
-        },
+        north = NO_SPRITE,
+        east = NO_SPRITE,
+        south = NO_SPRITE,
+        west = NO_SPRITE,
     },
     --circuit_wire_connection_points = circuit_connector_definitions['pump'].points,
     circuit_wire_connection_points =
@@ -633,6 +557,120 @@ local connector =
     circuit_wire_max_distance = 9,
 }
 
-data:extend({ radar, power_unit, connector })
---log( serpent.block( circuit_connector_definitions['pump'].points, {comment = false, numformat = '%1.8g' } ) )
---log( serpent.block( circuit_connector_definitions['pump'].sprites, {comment = false, numformat = '%1.8g' } ) )
+--- @type LuaEntityPrototype
+local connector =
+{
+    type = 'lamp',
+    name = Names.connector,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.connector),
+    icon_size = 32,
+    flags = { 'player-creation', 'not-deconstructable', 'not-rotatable' },
+    --order = 'a-a-b',
+    minable = nil,
+    energy_source =
+    {
+        type = 'void',
+        usage_priority = 'secondary-input',
+        emissions = 0,
+    },
+    max_health = 100,
+    corpse = 'lamp-remnants',
+    dying_explosion = 'lamp-explosion',
+    collision_box = { {-0.15, -0.15}, {0.15, 0.15} },
+    selection_box = { {-0.5, -0.5}, {0.5, 0.5} },
+    damaged_trigger_effect = hit_effects.entity(),
+    vehicle_impact_sound = sounds.generic_impact,
+    open_sound = sounds.machine_open,
+    close_sound = sounds.machine_close,
+    energy_usage_per_tick = '5KW',
+    darkness_for_all_lamps_on = 0.5,
+    darkness_for_all_lamps_off = 0.3,
+    light = { intensity = 0.9, size = 40, color = {r=1.0, g=1.0, b=0.75} },
+    light_when_colored = { intensity = 0, size = 6, color = {r=0, g=1.0, b=0.25} },
+    glow_size = 6,
+    glow_color_intensity = 1,
+    glow_render_mode = 'multiplicative',
+    picture_off =
+    {
+        layers =
+        {
+            {
+                filename = '__base__/graphics/entity/small-lamp/lamp.png',
+                priority = 'high',
+                width = 42,
+                height = 36,
+                frame_count = 1,
+                axially_symmetrical = false,
+                direction_count = 1,
+                shift = util.by_pixel(0,3),
+                hr_version =
+                {
+                    filename = '__base__/graphics/entity/small-lamp/hr-lamp.png',
+                    priority = 'high',
+                    width = 83,
+                    height = 70,
+                    frame_count = 1,
+                    axially_symmetrical = false,
+                    direction_count = 1,
+                    shift = util.by_pixel(0.25,3),
+                    scale = 0.5
+                }
+            },
+            {
+                filename = '__base__/graphics/entity/small-lamp/lamp-shadow.png',
+                priority = 'high',
+                width = 38,
+                height = 24,
+                frame_count = 1,
+                axially_symmetrical = false,
+                direction_count = 1,
+                shift = util.by_pixel(4,5),
+                draw_as_shadow = true,
+                hr_version =
+                {
+                    filename = '__base__/graphics/entity/small-lamp/hr-lamp-shadow.png',
+                    priority = 'high',
+                    width = 76,
+                    height = 47,
+                    frame_count = 1,
+                    axially_symmetrical = false,
+                    direction_count = 1,
+                    shift = util.by_pixel(4, 4.75),
+                    draw_as_shadow = true,
+                    scale = 0.5
+                }
+            }
+        }
+    },
+    picture_on =
+    {
+        filename = '__base__/graphics/entity/small-lamp/lamp-light.png',
+        priority = 'high',
+        width = 46,
+        height = 40,
+        frame_count = 1,
+        axially_symmetrical = false,
+        direction_count = 1,
+        shift = util.by_pixel(0, -7),
+        hr_version =
+        {
+            filename = '__base__/graphics/entity/small-lamp/hr-lamp-light.png',
+            priority = 'high',
+            width = 90,
+            height = 78,
+            frame_count = 1,
+            axially_symmetrical = false,
+            direction_count = 1,
+            shift = util.by_pixel(0, -7),
+            scale = 0.5
+        }
+    },
+    signal_to_color_mapping = { },
+    always_on = true,
+    
+    circuit_wire_connection_point = circuit_connector_definitions['lamp'].points,
+    circuit_connector_sprites = circuit_connector_definitions['lamp'].sprites,
+    circuit_wire_max_distance = default_circuit_wire_max_distance,
+}
+
+data:extend({ radar, power_unit, dummy_connector, connector })

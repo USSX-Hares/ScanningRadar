@@ -76,17 +76,17 @@ local function make_power_dump(radar)
 	if extra > 4000 then
 		extra = 4000
 	end
-	if extra > #radar.dump then
+	if extra > #radar.power_units then
 		--game.print( "need " .. extra - #radar.dump .. " more entities")
-		for i=1, extra - #radar.dump, 1 do
-			local sink = radar.radar.surface.create_entity{name = Names.power_dump, position = radar.radar.position, force = radar.radar.force}
-			table.insert(radar.dump, sink)
+		for i=1, extra - #radar.power_units, 1 do
+			local sink = radar.radar.surface.create_entity{ name = Names.power_unit, position = radar.radar.position, force = radar.radar.force}
+			table.insert(radar.power_units, sink)
 		end
-	elseif extra < #radar.dump then
+	elseif extra < #radar.power_units then
 		--game.print( "need " .. #radar.dump - extra .. " fewer entities")
-		for i=#radar.dump, extra + 1, -1 do
-			radar.dump[i].destroy()
-			table.remove(radar.dump, i)
+		for i=#radar.power_units, extra + 1, -1 do
+			radar.power_units[i].destroy()
+			table.remove(radar.power_units, i)
 		end
 	end
 end
@@ -256,7 +256,7 @@ end
 
 --- @param radar RadarData
 function impl.read_signals(radar)
-	local entity = radar.connection
+	local entity = radar.connector
 	local values = { r = 0,
 	                 b = 0,
 	                 e = 0,
@@ -335,7 +335,7 @@ end
 function impl.scan_next(radar)
 	local entity = radar.radar
 	local state = radar.state
-	local enabled = is_pump_enabled(radar.connection)
+	local enabled = is_pump_enabled(radar.connector)
 	
 	-- requested feature, return to start when enabled
 	if not state.enabled and state.speed > 0 then
@@ -362,8 +362,8 @@ function impl.scan_next(radar)
 		enabled = false
 	end
 	
-	for i=1, #radar.dump, 1 do
-		radar.dump[i].active = enabled
+	for i=1, #radar.power_units, 1 do
+		radar.power_units[i].active = enabled
 	end
 	entity.active = enabled
 

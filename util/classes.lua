@@ -17,7 +17,7 @@
 --- @field enabled int
 
 --- @class RadarData
---- @field connection LuaEntity
+--- @field connector LuaEntity
 --- @field radar LuaEntity
---- @field dump LuaEntity[]
+--- @field power_units LuaEntity[]
 --- @field state RadarState

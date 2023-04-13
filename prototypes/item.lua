@@ -17,8 +17,8 @@ local radar =
 local power_unit =
 {
     type = 'item',
-    name = Names.power_dump,
-    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.power_dump),
+    name = Names.power_unit,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.power_unit),
     icon_size = 32,
     flags = { 'hidden' },
     stack_size = 1

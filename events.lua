@@ -1,43 +1,13 @@
 local Names = require('util.names')
-local impl = require('impl')
+local impl = require('impl.core')
+local getters = require('impl.getters')
+local init = require('init')
 
 local UPDATE_INTERVAL = 3
 
 --- @module events
 local events = { }
 
-----
---- Finds the radar global index for the entity that caused en event.
---- Returns an index in the global table.
---- 
---- @param radar_entity LuaEntity
---- @return number
-----
-local function find_radar_index(radar_entity)
-	if radar_entity.name == Names.connector then
-		for i=#global.ScanningRadars, 1, -1 do
-			if global.ScanningRadars[i].connection.unit_number == radar_entity.unit_number then
-				return i
-			end
-		end
-	elseif radar_entity.name == Names.radar then
-		for i=#global.ScanningRadars, 1, -1 do
-			if global.ScanningRadars[i].radar.unit_number == radar_entity.unit_number then
-				return i
-			end
-		end
-	elseif radar_entity.name == Names.power_dump then
-		for i=#global.ScanningRadars, 1, -1 do
-			for _, dump in pairs(global.ScanningRadars[i].dump) do
-				if dump.unit_number == radar_entity.unit_number then
-					return i
-				end
-			end
-		end
-	end
-	
-	return -1
-end
 
 ----
 --- Destroys the given entity unless it is another given entity.
@@ -60,12 +30,12 @@ end
 local function delete_radar(radar_index, event_entity)
 	local radar_data = global.ScanningRadars[radar_index]
 	
-	for _, dump in pairs(radar_data.dump) do
+	for _, dump in pairs(radar_data.power_units) do
 		destroy_entity_unless_equal(dump, event_entity)
 	end
 	
 	destroy_entity_unless_equal(radar_data.radar, event_entity)
-	destroy_entity_unless_equal(radar_data.connection, event_entity)
+	destroy_entity_unless_equal(radar_data.connector, event_entity)
 	
 	table.remove(global.ScanningRadars, radar_index)
 	
@@ -77,8 +47,7 @@ end
 
 function events.OnEntityCreated(event)
 	if event.created_entity.name == Names.radar then
-		local connection = event.created_entity.surface.create_entity { name=Names.connector, position=event.created_entity.position, force=event.created_entity.force }
-		table.insert(global.ScanningRadars, {connection = connection, radar=event.created_entity, dump = {}, state = InitializeState(event.created_entity)})
+		init.add_radar_to_index(event.created_entity)
 		-- register to events after placing the first
 		if #global.ScanningRadars == 1 then
 			events.register_events()
@@ -103,7 +72,7 @@ end
 --- @param event { entity: LuaEntity }
 ----
 function events.OnEntityRemoved(event)
-	local index = find_radar_index(event.entity)
+	local index = getters.find_radar_index(event.entity)
 	if (index == 0) then return end
 	delete_radar(index, event.entity)
 end
@@ -123,7 +92,7 @@ function events.register_events(register_on_build)
 	
 	if (global.ScanningRadars and next(global.ScanningRadars)) then
 		script.on_event(defines.events.on_tick, events.OnTick)
-		local filter = { { filter='name', name=Names.radar }, { filter='name', name=Names.connector }, { filter='name', name=Names.power_dump } }
+		local filter = { { filter='name', name=Names.radar }, { filter='name', name=Names.connector }, { filter='name', name=Names.power_unit } }
 		for _, event in pairs({ defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined, defines.events.on_entity_died }) do
 			script.on_event(event, events.OnEntityRemoved, filter)
 		end
