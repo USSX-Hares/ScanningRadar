@@ -1,15 +1,18 @@
-data:extend({
-  {
-    type = "recipe",
-    name = "scanning-radar",
+local Names = require('util.names')
+
+local radar = 
+{
+    type = 'recipe',
+    name = Names.radar,
     enabled = false,
     energy_required = 10,
     ingredients =
     {
-      {"processing-unit", 1},
-      {"electric-engine-unit",2},
-      {"radar", 1}
+        { 'processing-unit', 1 },
+        { 'electric-engine-unit', 2 },
+        { 'radar', 1 },
     },
-    result = "scanning-radar"
-  }
-})
+    result = Names.radar
+}
+
+data:extend({ radar } )

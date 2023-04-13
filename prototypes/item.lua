@@ -1,29 +1,37 @@
-data:extend({
-  {
-    type = "item",
-    name = "scanning-radar",
-    icon = "__ScanningRadar__/graphics/item_icon_scanningradar.png",
+local Names = require('util.names')
+local Resources = require('util.resources')
+
+local radar =
+{
+    type = 'item',
+    name = Names.radar,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.radar),
     icon_size = 32,
-    subgroup = "defensive-structure",
-    order = "z[radar]-a[radar]",
-    place_result = "scanning-radar",
+    subgroup = 'defensive-structure',
+    order = 'z[radar]-a[radar]',
+    place_result = Names.radar,
     stack_size = 10,
     default_request_amount = 10
-  },
-  {
-    type = "item",
-    name = "scanning-radar-powerdump",
-    icon = "__ScanningRadar__/graphics/item_icon_scanningradar.png",
+}
+
+local power_unit =
+{
+    type = 'item',
+    name = Names.power_dump,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.power_dump),
     icon_size = 32,
-    flags = {"hidden"},
+    flags = { 'hidden' },
     stack_size = 1
-  },
-  {
-    type = "item",
-    name = "scanning-radar-connection",
-    icon = "__ScanningRadar__/graphics/item_icon_scanningradar.png",
+}
+
+local connector =
+{
+    type = 'item',
+    name = Names.connector,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.connector),
     icon_size = 32,
-    flags = {"hidden"},
+    flags = { 'hidden' },
     stack_size = 1
-  }
-})
+}
+
+data:extend({ radar, power_unit, connector })
