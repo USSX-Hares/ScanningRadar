@@ -1,6 +1,17 @@
 local Names = require('util.names')
 local Resources = require('util.resources')
 
+--- @type Sprite
+local NO_SPRITE =
+{
+    filename = '__core__/graphics/empty.png',
+    priority = 'low',
+    width = 1,
+    height = 1,
+    direction_count = 1,
+}
+
+
 --- @type LuaEntityPrototype
 local radar =
 {
@@ -126,7 +137,7 @@ local power_unit =
     name = Names.power_dump,
     icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.power_dump),
     icon_size = 32,
-    flags = { 'placeable-player', 'player-creation' },
+    flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable' },
     order = 'a-a-a',
     minable =
     {
@@ -147,19 +158,7 @@ local power_unit =
         usage_priority = 'secondary-input',
     },
     energy_usage = '2500.1kW',
-    pictures =
-    {
-        layers =
-        {
-            {
-                filename = '__core__/graphics/empty.png',
-                priority = 'low',
-                width = 1,
-                height = 1,
-                direction_count = 1,
-            },
-        },
-    }
+    pictures = NO_SPRITE
 }
 
 --- @type LuaEntityPrototype
