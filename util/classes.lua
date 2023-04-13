@@ -1,0 +1,23 @@
+--- @class RadarState
+--- @field cx double
+--- @field cy double
+--- @field radius int
+--- @field inner int
+--- @field angle int
+--- @field previous float
+--- @field step float
+--- @field direction int
+--- @field constrained boolean
+--- @field oscillate boolean
+--- @field start int
+--- @field stop int
+--- @field speed int
+--- @field counter int
+--- @field uncharted table
+--- @field enabled int
+
+--- @class RadarData
+--- @field connection LuaEntity
+--- @field radar LuaEntity
+--- @field dump LuaEntity[]
+--- @field state RadarState
