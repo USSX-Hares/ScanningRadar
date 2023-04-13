@@ -1,8 +1,8 @@
 {
   "name": "ScanningRadar",
-  "description": "A scanning radar that sweeps an arc",
-  "version": "0.3.4",
+  "description": "A fork of Strath's ScanningRadar mod. A scanning radar that sweeps an arc.",
+  "version": "0.4.0",
   "title": "Scanning Radar",
-  "author": "Strath",
+  "author": "Hares",
   "factorio_version": "1.1"
 }
