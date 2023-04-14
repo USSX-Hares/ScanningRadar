@@ -197,10 +197,9 @@ function init.find_entity_at_position(prototype_id, surface, position, ghosts_al
     
     if (ghosts_allowed)
     then
-        --- @type LuaEntity
         local ghosts = surface.find_entities_filtered { name=GHOST, position=position, ghost_name=prototype_id }
         local ghost = ghosts and next(ghosts) and ghosts[next(ghosts)]
-        if (ghost and ghost.valid and ghost.name == prototype_id)
+        if (ghost and ghost.valid and ghost.ghost_name == prototype_id)
         then
             _, entity = ghost.revive()
             init.update_entity_flags(entity)
