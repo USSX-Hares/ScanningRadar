@@ -75,4 +75,41 @@ function utils.find_radar_index(radar_entity)
     return -1
 end
 
+----
+--- Converts the given entity its string representation.
+--- Uses custom parsers for string and tables.
+--- 
+--- @param x any
+--- @return string
+function utils.repr(x)
+    if (type(x) == 'table')
+    then return utils.table2str(x)
+    elseif (type(x) == 'string')
+    then return "'" .. x .. "'"
+    else return tostring(x)
+    end
+end
+
+----
+--- Converts the given table to string in format:
+--- { key="value", key2="value2, key3={ subkey="data" } }
+---
+--- @param table table
+--- @return string
+function utils.table2str(table)
+    assert(type(table) == 'table', string.format("%q only works with tables, got %q", 'utils.table2str', type(table)))
+    
+    local result = '{'
+    local next = ' '
+    
+    for k, v in pairs(table)
+    do
+        result = result .. next .. tostring(k) .. '=' .. utils.repr(v)
+        next = ', '
+    end
+    
+    result = result .. ' }'
+    return result
+end
+
 return utils

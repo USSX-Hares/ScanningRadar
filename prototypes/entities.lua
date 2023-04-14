@@ -1,14 +1,7 @@
 local utils = require('script.utils')
+local core_util = require('__core__.lualib.util')
 
---- @type Sprite
-local NO_SPRITE =
-{
-    filename = '__core__/graphics/empty.png',
-    priority = 'low',
-    width = 1,
-    height = 1,
-    direction_count = 1,
-}
+local NO_SPRITE = core_util.empty_sprite()
 
 
 --- @type LuaEntityPrototype
