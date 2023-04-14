@@ -4,7 +4,7 @@ local init = require('script.init')
 
 local UPDATE_INTERVAL = 3
 
---- @module events
+--- @module
 local events = { }
 
 

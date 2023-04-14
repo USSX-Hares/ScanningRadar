@@ -1,6 +1,6 @@
 local init = require('script.init')
 
---- @module impl
+--- @module
 impl = { }
 
 local tau = 6.2831853071796

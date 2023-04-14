@@ -1,4 +1,4 @@
---- @module Utils
+--- @module
 utils = { }
 
 
@@ -81,6 +81,7 @@ end
 --- 
 --- @param x any
 --- @return string
+----
 function utils.repr(x)
     if (type(x) == 'table')
     then return utils.table2str(x)
@@ -96,6 +97,7 @@ end
 ---
 --- @param table table
 --- @return string
+----
 function utils.table2str(table)
     assert(type(table) == 'table', string.format("%q only works with tables, got %q", 'utils.table2str', type(table)))
     

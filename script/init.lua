@@ -1,6 +1,6 @@
 local utils = require('script.utils')
 
---- @module Init
+--- @module
 local init = { }
 
 local GHOST = 'entity-ghost'
@@ -149,7 +149,6 @@ function init.find_entities_at_position(prototype_id, surface, position, ghosts_
     --- @type LuaEntity[]
     local data = { }
     
-    --- @type LuaEntity[]
     local entities = surface.find_entities_filtered { name=prototype_id, position=position }
     for _, entity in pairs(entities)
     do
@@ -162,7 +161,6 @@ function init.find_entities_at_position(prototype_id, surface, position, ghosts_
     
     if (ghosts_allowed)
     then
-        --- @type LuaEntity[]
         local ghosts = surface.find_entities_filtered { name=GHOST, position=position, ghost_name=prototype_id }
         for _, ghost in pairs(ghosts)
         do

@@ -16,7 +16,6 @@ log("Starting migration: v0.4.0")
 local has_any = false
 for _, s in pairs(game.surfaces)
 do
-    --- @type LuaEntity[]
     local dummies = s.find_entities_filtered { name=Names.prototypes.dummy_connector }
     for _, dummy in pairs(dummies)
     do
@@ -30,11 +29,9 @@ do
             do radar_data.connector.connect_neighbour(connection)
             end
             
-            --- @type LuaGenericOnOffControlBehavior?
             local dummy_control = dummy.get_control_behavior()
             if (dummy_control)
             then
-                --- @type LuaLampControlBehavior?
                 local connector_control = radar_data.connector.get_or_create_control_behavior()
                 connector_control.circuit_condition = dummy_control.circuit_condition
                 connector_control.logistic_condition = dummy_control.logistic_condition
