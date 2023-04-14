@@ -18,23 +18,23 @@ function init.init_state(radar)
     {
         cx = radar.position.x,
         cy = radar.position.y,
-        radius = settings.global["ScanningRadar_radius"].value,
+        radius = settings.global[Names.settings.default_radar_range].value,
         inner = 0,
         angle = 0,
         previous = 0,
-        step = 1 / (settings.global["ScanningRadar_radius"].value / 32),
+        step = 1 / (settings.global[Names.settings.default_radar_range].value / 32),
         direction = -1,
         constrained = false,
         oscillate = false,
         start = 0,
         stop = 0,
-        speed = settings.global["ScanningRadar_speed"].value,
+        speed = settings.global[Names.settings.default_radar_speed].value,
         counter = 0,
         uncharted = { },
         enabled = 1
     }
     
-    if settings.global["ScanningRadar_direction"].value == "Clockwise" then
+    if settings.global[Names.settings.default_radar_direction].value == "Clockwise" then
         state.direction = 1
         state.previous = -state.step
     else

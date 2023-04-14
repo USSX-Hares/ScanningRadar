@@ -68,7 +68,7 @@ local function make_power_dump(radar)
     local o = radar.state.radius / 32
     local s = radar.state.speed
     local extra = (constant * (o * o - i * i) * s - 10) / dump_size
-    if extra < 0 or not settings.global["ScanningRadar_power"].value then
+    if extra < 0 or not settings.global[Names.settings.radar_requires_power].value then
         extra = 0
     end
     extra = extra + .5 - (extra + .5) % 1
@@ -287,8 +287,8 @@ function impl.read_signals(radar)
         values.r = values.n + 1
     end
     -- set outside radius and max step size
-    if values.r <= 0 and radar.state.radius ~= settings.global["ScanningRadar_radius"].value then
-        values.r = settings.global["ScanningRadar_radius"].value
+    if values.r <= 0 and radar.state.radius ~= settings.global[Names.settings.default_radar_range].value then
+        values.r = settings.global[Names.settings.default_radar_range].value
     end
     -- Ok, thats big enough.
     if values.r > 20000 then
@@ -323,7 +323,7 @@ function impl.read_signals(radar)
     end
     -- set speed
     if values.s <= 0 then
-        radar.state.speed = settings.global["ScanningRadar_speed"].value
+        radar.state.speed = settings.global[Names.settings.default_radar_speed].value
     elseif values.s >= 1 and values.s <= 10 then
         radar.state.speed = values.s
     elseif values.s > 10 then
@@ -343,7 +343,7 @@ function impl.scan_next(radar)
             state.angle = state.start
             if state.oscillate then
                 state.direction = -1
-                if settings.global["ScanningRadar_direction"].value == "Clockwise" then
+                if settings.global[Names.settings.default_radar_direction].value == "Clockwise" then
                     state.direction = 1
                 end
             end
@@ -421,7 +421,7 @@ function impl.scan_next(radar)
                 local c = new_angle < state.start -- is before start
                 local d = new_angle > state.stop -- is after stop
                 if state.oscillate then
-                    local e = settings.global["ScanningRadar_direction"].value == "Clockwise"
+                    local e = settings.global[Names.settings.default_radar_direction].value == "Clockwise"
                     if     e     and b     and a     and d     and c     then
                         radar.state.direction = -1
                         new_angle = state.stop

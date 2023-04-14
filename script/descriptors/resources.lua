@@ -1,7 +1,9 @@
+local Names = require('script.descriptors.names')
+
 --- @module Resources
 Resources = { }
 
-Resources.__name__ = '__ScanningRadar__'
+Resources.__name__ = '__' .. Names.mod_name .. '__'
 Resources.graphics_dir = Resources.__name__ .. '/graphics/'
 
 Resources.graphics_item_types =
