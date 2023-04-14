@@ -50,19 +50,19 @@ end
 --- @return number
 ----
 function utils.find_radar_index(radar_entity)
-    if radar_entity.name == Names.connector then
+    if radar_entity.name == Names.prototypes.connector then
         for i=#global.ScanningRadars, 1, -1 do
             if global.ScanningRadars[i].connector.unit_number == radar_entity.unit_number then
                 return i
             end
         end
-    elseif radar_entity.name == Names.radar then
+    elseif radar_entity.name == Names.prototypes.radar then
         for i=#global.ScanningRadars, 1, -1 do
             if global.ScanningRadars[i].radar.unit_number == radar_entity.unit_number then
                 return i
             end
         end
-    elseif radar_entity.name == Names.power_unit then
+    elseif radar_entity.name == Names.prototypes.power_unit then
         for i=#global.ScanningRadars, 1, -1 do
             for _, dump in pairs(global.ScanningRadars[i].power_units) do
                 if dump.unit_number == radar_entity.unit_number then

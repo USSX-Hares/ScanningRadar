@@ -17,10 +17,10 @@ local has_any = false
 for _, s in pairs(game.surfaces)
 do
     --- @type LuaEntity[]
-    local dummies = s.find_entities_filtered { name=Names.dummy_connector }
+    local dummies = s.find_entities_filtered { name=Names.prototypes.dummy_connector }
     for _, dummy in pairs(dummies)
     do
-        local radar = s.find_entity(Names.radar, dummy.position)
+        local radar = s.find_entity(Names.prototypes.radar, dummy.position)
         local id = radar ~= nil and getters.find_radar_index(radar)
         if (id ~= nil and id >= 0)
         then

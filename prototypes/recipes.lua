@@ -1,7 +1,7 @@
 local radar = 
 {
     type = 'recipe',
-    name = Names.radar,
+    name = Names.prototypes.radar,
     enabled = false,
     energy_required = 10,
     ingredients =
@@ -10,7 +10,7 @@ local radar =
         { 'electric-engine-unit', 2 },
         { 'radar', 1 },
     },
-    result = Names.radar
+    result = Names.prototypes.radar
 }
 
 data:extend({ radar } )

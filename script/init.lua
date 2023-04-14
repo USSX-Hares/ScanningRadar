@@ -74,7 +74,7 @@ end
 --- @param entity LuaEntity
 ----
 function init.update_entity_flags(entity)
-    if (entity.name ~= Names.connector)
+    if (entity.name ~= Names.prototypes.connector)
     then entity.operable = false
     end
     
@@ -92,7 +92,7 @@ function init.create_connector(radar)
     --- @type LuaEntity
     local connector = radar.surface.create_entity
     {
-        name = Names.connector,
+        name = Names.prototypes.connector,
         position = utils.get_radar_connector_position(radar.position, radar.direction),
         force = radar.force,
     }
@@ -124,7 +124,7 @@ function init.create_power_unit(radar)
     --- @type LuaEntity
     local power_unit = radar.surface.create_entity
     {
-        name = Names.power_unit,
+        name = Names.prototypes.power_unit,
         position = radar.position,
         force = radar.force,
     }
@@ -223,7 +223,7 @@ end
 --- @return LuaEntity
 ----
 function init.get_or_create_connector(radar)
-    return init.find_entity_at_position(Names.connector, radar.surface, utils.get_radar_connector_position(radar.position, radar.direction), true)
+    return init.find_entity_at_position(Names.prototypes.connector, radar.surface, utils.get_radar_connector_position(radar.position, radar.direction), true)
             or init.create_connector(radar)
 end
 
@@ -245,7 +245,7 @@ function init.add_radar_to_index(radar, connector, power_units, state)
     {
         radar = radar,
         connector = connector or init.get_or_create_connector(radar),
-        power_units = power_units or init.find_entities_at_position(Names.power_unit, radar.surface, radar.position, false),
+        power_units = power_units or init.find_entities_at_position(Names.prototypes.power_unit, radar.surface, radar.position, false),
         state = state or init.init_state(radar)
     }
     
@@ -263,8 +263,7 @@ function init.init_radars()
     global.ScanningRadars = { }
     -- Pick up any orphaned scanning radars
     for _, surface in pairs(game.surfaces) do
-        --- @type LuaEntity[]
-        radars = surface.find_entities_filtered { name=Names.radar }
+        radars = surface.find_entities_filtered { name=Names.prototypes.radar }
         for _, radar in pairs(radars) do
             log(string.format(" * Reinitializing radar #%i", radar.unit_number))
             init.add_radar_to_index(radar, connector, power_units)

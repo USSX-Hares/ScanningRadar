@@ -56,7 +56,7 @@ local function delete_radar(radar_index, event_entity, force, cause)
 end
 
 function events.OnEntityCreated(event)
-    if event.created_entity.name == Names.radar then
+    if event.created_entity.name == Names.prototypes.radar then
         init.add_radar_to_index(event.created_entity)
         -- register to events after placing the first
         if #global.ScanningRadars == 1 then
@@ -96,13 +96,13 @@ end
 function events.register_events(register_on_build)
     if (register_on_build) then
         for _, event in pairs( { defines.events.on_built_entity, defines.events.on_robot_built_entity }) do
-            script.on_event(event, events.OnEntityCreated, { { filter='name', name=Names.radar } })
+            script.on_event(event, events.OnEntityCreated, { { filter='name', name=Names.prototypes.radar } })
         end
     end
     
     if (global.ScanningRadars and next(global.ScanningRadars)) then
         script.on_event(defines.events.on_tick, events.OnTick)
-        local filter = { { filter='name', name=Names.radar } }
+        local filter = { { filter='name', name=Names.prototypes.radar } }
         for _, event in pairs({ defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined, defines.events.on_entity_died }) do
             script.on_event(event, events.OnEntityRemoved, filter)
         end

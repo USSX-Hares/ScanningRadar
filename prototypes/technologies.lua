@@ -1,15 +1,15 @@
 local tech =
 {
     type = 'technology',
-    name = Names.tech,
+    name = Names.prototypes.tech,
     icon_size = 128,
-    icon = Resources.get_graphics_item(Resources.graphics_item_types.TechIcon, Names.radar),
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.TechIcon, Names.prototypes.radar),
     prerequisites = { 'electric-engine', 'advanced-electronics-2' },
     effects =
     {
         {
             type = 'unlock-recipe',
-            recipe = Names.radar
+            recipe = Names.prototypes.radar
         }
     },
     unit =

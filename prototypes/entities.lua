@@ -7,7 +7,7 @@ local NO_SPRITE = core_util.empty_sprite()
 --- @type LuaEntityPrototype
 local radar =
 {
-    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.radar),
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.prototypes.radar),
     icon_size = 32,
     flags = { 'placeable-player', 'player-creation' },
     minable =
@@ -24,15 +24,15 @@ local radar =
     energy_usage = '10.1MW',
     radius_minimap_visualisation_color = { r = 0.059, g = 0.092, b = 0.235, a = 0.275 },
 }
-radar = utils.update_prototype(flib.copy_prototype(data.raw['radar']['radar'], Names.radar), radar)
+radar = utils.update_prototype(flib.copy_prototype(data.raw['radar']['radar'], Names.prototypes.radar), radar)
 
 
 --- @type LuaEntityPrototype
 local power_unit =
 {
     type = 'radar',
-    name = Names.power_unit,
-    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.power_unit),
+    name = Names.prototypes.power_unit,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.prototypes.power_unit),
     icon_size = 32,
     flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable', 'no-copy-paste' },
     order = 'a-a-a',
@@ -62,8 +62,8 @@ local power_unit =
 --- @type LuaEntityPrototype
 local dummy_connector =
 {
-    name = Names.dummy_connector,
-    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.connector),
+    name = Names.prototypes.dummy_connector,
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.prototypes.connector),
     icon_size = 32,
     flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable' },
     collision_mask = { },
@@ -77,7 +77,7 @@ local dummy_connector =
     },
     circuit_wire_max_distance = 9,
 }
-dummy_connector = utils.update_prototype(flib.copy_prototype(data.raw['pump']['pump'], Names.dummy_connector), dummy_connector)
+dummy_connector = utils.update_prototype(flib.copy_prototype(data.raw['pump']['pump'], Names.prototypes.dummy_connector), dummy_connector)
 dummy_connector.energy_source.type = 'void'
 dummy_connector.minable = nil
 dummy_connector.next_upgrade = nil
@@ -86,7 +86,7 @@ dummy_connector.next_upgrade = nil
 --- @type LuaEntityPrototype
 local connector =
 {
-    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.connector),
+    icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.prototypes.connector),
     icon_size = 32,
     signal_to_color_mapping = { },
     selection_box = { {-0.5, -0.5}, {0.5, 0.5} },
@@ -95,7 +95,7 @@ local connector =
     collision_mask = { },
     always_on = true,
 }
-connector = utils.update_prototype(flib.copy_prototype(data.raw['lamp']['small-lamp'], Names.connector), connector)
+connector = utils.update_prototype(flib.copy_prototype(data.raw['lamp']['small-lamp'], Names.prototypes.connector), connector)
 connector.energy_source.type = 'void'
 connector.minable = nil
 connector.next_upgrade = nil
