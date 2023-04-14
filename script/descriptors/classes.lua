@@ -1,4 +1,6 @@
 --- @class RadarState
+--- A class representing radar current state, including all settings.
+--- 
 --- @field cx double
 --- @field cy double
 --- @field radius int
@@ -16,7 +18,19 @@
 --- @field uncharted table
 --- @field enabled int
 
+--- @class RadarInputSignal
+--- A class representing radar configuration read from the circuit network, before any defaults apply.
+---
+--- @field r int Radius, Scanning radius (may also be F -- Far range)
+--- @field d int Direction, 1 for Clockwise, -1 for Counterclockwise
+--- @field b int Begin angle, 0-360, sweep constraint
+--- @field e int End angle, 0-360, sweep constraint
+--- @field n int Near range, near limit scanning radius
+--- @field s int Speed, 1 (slow) - 10 (fast)
+
 --- @class RadarData
+--- A class containing radar entities and state
+--- 
 --- @field connector LuaEntity
 --- @field radar LuaEntity
 --- @field power_units LuaEntity[]

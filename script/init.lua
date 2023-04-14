@@ -6,6 +6,26 @@ local init = { }
 local GHOST = 'entity-ghost'
 
 ----
+--- Creates a new table of `RadarInputSignal` with all values set to 0.
+--- 
+--- @return RadarInputSignal
+----
+function init.init_signals()
+    --- @type RadarInputSignal
+    local values =
+    {
+        r = 0,
+        b = 0,
+        e = 0,
+        d = 0,
+        n = 0,
+        s = 0,
+    }
+    
+    return values
+end
+
+----
 --- Creates a new `RadarState` table for the given radar.
 ---
 --- @param radar LuaEntity

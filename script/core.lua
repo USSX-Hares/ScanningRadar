@@ -10,6 +10,11 @@ local RIGHT  = 2 -- 0010
 local BOTTOM = 4 -- 0100
 local TOP    = 8 -- 1000
 
+
+----
+--- @param network LuaCircuitNetwork
+--- @param values RadarInputSignal?
+--- @return RadarInputSignal
 local function get_signals(network, values)
     if network then
         local signals = network.signals
@@ -38,6 +43,9 @@ local function get_signals(network, values)
     return values
 end
 
+----
+--- @param pump LuaEntity
+--- @return boolean
 local function is_pump_enabled(pump)
     local control = pump.get_control_behavior()
     if control and control.valid then
@@ -91,6 +99,10 @@ local function make_power_dump(radar)
     end
 end
 
+--- @param p MapPosition
+--- @param tl MapPosition
+--- @param br MapPosition
+--- @return int
 local function point_region( p, tl, br )
     local region = INSIDE
     if p.x < tl.x then
@@ -106,6 +118,20 @@ local function point_region( p, tl, br )
     return region
 end
 
+----
+--- @class Line
+--- @field inbound boolean
+--- @field p1 MapPosition
+--- @field p2 MapPosition
+----
+
+----
+--- @param p1 MapPosition
+--- @param p2 MapPosition
+--- @param tl MapPosition
+--- @param br MapPosition
+--- @return Line
+----
 local function clip_line( p1, p2, tl, br )
     p1_region = point_region(p1, tl, br)
     p2_region = point_region(p2, tl, br)
@@ -156,7 +182,13 @@ end
 --	return math.sqrt( dx * dx + dy * dy )
 --end
 
+--- @param force LuaForce
+--- @param surface LuaSurface
+--- @param p1 MapPosition
+--- @param p2 MapPosition
+--- @return MapPosition
 local function plotLineH(force, surface, p1, p2)
+    --- @type MapPosition
     local uncharted = {}
     local dx = p2.x - p1.x
     local dy = p2.y - p1.y
@@ -195,7 +227,13 @@ local function plotLineH(force, surface, p1, p2)
     return uncharted
 end
 
+--- @param force LuaForce
+--- @param surface LuaSurface
+--- @param p1 MapPosition
+--- @param p2 MapPosition
+--- @return MapPosition
 local function plotLineV(force, surface, p1, p2)
+    --- @type MapPosition
     local uncharted = {}
     local dx = p2.x - p1.x
     local dy = p2.y - p1.y
@@ -234,6 +272,11 @@ local function plotLineV(force, surface, p1, p2)
     return uncharted
 end
 
+--- @param force LuaForce
+--- @param surface LuaSurface
+--- @param p1 MapPosition
+--- @param p2 MapPosition
+--- @return MapPosition
 local function scan_line(force, surface, p1, p2)
     if math.abs(p2.y - p1.y) < math.abs(p2.x - p1.x) then
         if p1.x > p2.x then
@@ -257,23 +300,16 @@ end
 --- @param radar RadarData
 function impl.read_signals(radar)
     local entity = radar.connector
-    local values = { r = 0,
-                     b = 0,
-                     e = 0,
-                     d = 0,
-                     n = 0,
-                     s = 0
-    }
-    -- read red signals
-    local network = entity.get_circuit_network(defines.wire_type.red)
-    if network then
-        values = get_signals(network, values)
+    local values = init.init_signals()
+    
+    for _, signal in pairs({ 'red', 'green' })
+    do
+        local network = entity.get_circuit_network(defines.wire_type[signal])
+        if network then
+            values = get_signals(network, values)
+        end
     end
-    -- sum with green signals
-    local network = entity.get_circuit_network(defines.wire_type.green)
-    if network then
-        values = get_signals(network, values)
-    end
+    
     -- apply signals
     -- set inside radius and push the outside radius out if needed
     if values.n < 0 then
