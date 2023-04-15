@@ -1,8 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.2
+Date: 2023-04-15
+  Minor Features:
+   - Added integration with a Schall Virtual Signal (https://mods.factorio.com/mod/SchallVirtualSignal) mod.
+  Changes:
+   - Added FAQ
+
+---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: 2023-04-15
-  Bug Fixes:
-   - Additional Power Units now correctly nest radar's collision box so they're now always powered if the parent radar is.
+  Bugfixes:
+    - Additional Power Units now correctly nest radar's collision box so they're now always powered if the parent radar is.
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 2023-04-15
@@ -14,16 +23,19 @@ Date: 2023-04-15
     - Scanning radars now leave corpses
     - Scanning radars can now be deconstructed by robots
     - Internal changes & optimizations
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.4
 Date: 2020-12-27
   Changes:
     - Updated for 1.1
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.3
 Date: 2020-01-31
   Changes:
     - Updated for 0.18
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.2
 Date: 2019-04-27
@@ -32,6 +44,7 @@ Date: 2019-04-27
     - Use actual backlog of chunks to be generated to retard scan
   Bugfixes:
     - Corrected issue with height/width limited surfaces
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.1
 Date: 2019-03-24
@@ -39,6 +52,7 @@ Date: 2019-03-24
     - Updated for 0.17
   Bugfixes:
     - Scan no longer stalls when radius is changed while new chunks are being charted
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2019-01-27
@@ -47,11 +61,13 @@ Date: 2019-01-27
   Minor Features:
     - Changed minimum speed in mod options to zero to disable until given a signal
     - Added signal information to mouse-over of item and recipe
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.9
 Date: 2018-06-17
   Bugfixes:
     - Invalid entity was referenced when hidden entity destroyed
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.8
 Date: 2018-05-13
@@ -65,16 +81,19 @@ Date: 2018-05-13
     - Pause sweep while game generates new map data
     - Step size increased to full chunk on outside diameter per step
     - Polished prototype entries
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.5
 Date: 2018-05-02
   Bugfixes:
     - Quick fix for mining, seems to fix bot mining as well
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.4
 Date: 2018-03-18
   Compatibility:
     - Some mods requires all items to have a 32 pixel icon
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.3
 Date: 2018-03-18
@@ -93,11 +112,13 @@ Date: 2018-03-18
     - Able to configure default scanning speed
   Changes:
     - Switched from Bresenham's circle algorithm to trig based calculation
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.1
 Date: 2018-03-13
   Minor Features:
     - Able to configure direction of rotation
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2018-03-11

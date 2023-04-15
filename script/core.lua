@@ -25,6 +25,10 @@ local function get_signals(network, values)
                         values.r = values.r + signal.count
                     elseif signal.signal.name == "signal-D" then
                         values.d = values.d + signal.count
+                    elseif signal.signal.name == 'signal-arrow-clockwise-open-circle' then
+                        values.d = values.d + 1
+                    elseif signal.signal.name == 'signal-arrow-anticlockwise-open-circle' then
+                        values.d = values.d - 1
                     elseif signal.signal.name == "signal-B" then
                         values.b = values.b + signal.count
                         values.b = values.b % 360
