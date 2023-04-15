@@ -1,5 +1,5 @@
 - - -
-# Signal References:
+# Signal References
 ### Range Control:
  - **R or F:** (Far) Range, maximum scanning distance, in tiles (32 tiles per chunk)
  - **N:** Near range, minimum scanning distance, in tiles.
