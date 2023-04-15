@@ -186,7 +186,7 @@ end
 --- @param surface LuaSurface
 --- @param p1 MapPosition
 --- @param p2 MapPosition
---- @return MapPosition
+--- @return MapPosition[]
 local function plotLineH(force, surface, p1, p2)
     --- @type MapPosition
     local uncharted = {}
@@ -231,7 +231,7 @@ end
 --- @param surface LuaSurface
 --- @param p1 MapPosition
 --- @param p2 MapPosition
---- @return MapPosition
+--- @return MapPosition[]
 local function plotLineV(force, surface, p1, p2)
     --- @type MapPosition
     local uncharted = {}
@@ -276,7 +276,7 @@ end
 --- @param surface LuaSurface
 --- @param p1 MapPosition
 --- @param p2 MapPosition
---- @return MapPosition
+--- @return MapPosition[]
 local function scan_line(force, surface, p1, p2)
     if math.abs(p2.y - p1.y) < math.abs(p2.x - p1.x) then
         if p1.x > p2.x then

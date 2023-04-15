@@ -5,17 +5,17 @@
 --- @field cy double
 --- @field radius int
 --- @field inner int
---- @field angle int
---- @field previous float
---- @field step float
 --- @field direction int
 --- @field constrained boolean
 --- @field oscillate boolean
---- @field start int
---- @field stop int
+--- @field start float      Start angle, in radians
+--- @field stop function    End angle, in radians
+--- @field step float       Angle step, in radians
+--- @field previous float   Previous angle value, in radians
+--- @field angle float      Current angle value, in radians
 --- @field speed int
 --- @field counter int
---- @field uncharted table
+--- @field uncharted MapPosition[]
 --- @field enabled int
 
 --- @class RadarInputSignal
