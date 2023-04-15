@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.1
+Date: 2023-04-15
+  Bug Fixes:
+   - Additional Power Units now correctly nest radar's collision box so they're now always powered if the parent radar is.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 2023-04-15
   Major Features:

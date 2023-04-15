@@ -35,15 +35,9 @@ local power_unit =
     icon = Resources.get_graphics_item(Resources.graphics_item_types.ItemIcon, Names.prototypes.power_unit),
     icon_size = 32,
     flags = { 'hidden', 'not-on-map', 'not-blueprintable', 'not-deconstructable', 'not-rotatable', 'no-copy-paste' },
-    order = 'a-a-a',
-    minable =
-    {
-        hardness = 0.2,
-        mining_time = 0.5,
-        result = nil,
-    },
+    minable = nil,
     max_health = 1,
-    corpse = 'big-remnants',
+    corpse = nil,
     energy_per_sector = '1J',
     max_distance_of_sector_revealed = 0,
     max_distance_of_nearby_sector_revealed = 0,
@@ -55,6 +49,7 @@ local power_unit =
     },
     energy_usage = '2500.1kW',
     pictures = NO_SPRITE,
+    collision_box = radar.collision_box,
     collision_mask = { },
 }
 
