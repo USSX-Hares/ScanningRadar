@@ -18,7 +18,7 @@ local base_id = 'scanning-radar'
 local Names =
 {
     base_name = base_name,
-    mod_id = base_name,
+    mod_id = 'ScanningRadar_Blueprintable',
     
     settings =
     {

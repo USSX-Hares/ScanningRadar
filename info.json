@@ -1,9 +1,9 @@
 {
-    "name": "ScanningRadar",
-    "description": "A fork of Strath's ScanningRadar mod. A scanning radar that sweeps an arc.",
+    "name": "ScanningRadar_Blueprintable",
+    "description": "A fork of Strath's ScanningRadar mod. A scanning radar that sweeps an arc. Control range, speed, arc, and direction via circuit network signals, now supporting blueprints!",
     "version": "0.4.0",
-    "title": "Scanning Radar",
+    "title": "Scanning Radar (Blueprintable)",
     "author": "Hares",
-    "dependencies": [ "flib >= 0.12" ],
+    "dependencies": [ "flib >= 0.12", "!ScanningRadar" ],
     "factorio_version": "1.1"
 }

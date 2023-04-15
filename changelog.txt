@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 2023-04-15
+  Major Features:
+    - Initial blueprint compatibility
+    - Connection point is now a separate entity located near the radar
+  Changes:
+    - Scanning radars are no longer considered as pumps
+    - Scanning radars now leave corpses
+    - Scanning radars can now be deconstructed by robots
+    - Internal changes & optimizations
+---------------------------------------------------------------------------------------------------
 Version: 0.3.4
 Date: 2020-12-27
   Changes:
