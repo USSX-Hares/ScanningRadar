@@ -12,6 +12,7 @@
  - **S:** Speed, 1..10, in inverse scare scale
 
 In addition, the following signals from [Schall Virtual Signal](https://mods.factorio.com/mod/SchallVirtualSignal) mod are supported:
+
  - ↻ and ↺ (`clockwise-open-circle` and `anticlockwise-open-circle` respectively):
    If either is set (≠ 0), and Direction is unset, the respective direction (clockwise and anticlockwise) is considered.
 
@@ -23,6 +24,7 @@ Note that by now oscillation can't be controlled if the direction is set.
 
 ### Default Settings:
 If any (except for Begin and End angles) setting is missing in the input signal, the default values apply:
+
  * **Near Range:** 0
  * **Far Range:** 576 (18 tiles), can be changed in mod's settings
  * **Direction:** Anticlockwise-oscillating, can be changed in mod's settings
@@ -30,6 +32,7 @@ If any (except for Begin and End angles) setting is missing in the input signal,
 
 ### Invalid States:
 Having any of the following would result in the invalid input state and lead to undefined behaviour:
+
  * Both **R** and **F** values are set
  * Any two of the following are set: **D**, ↻, or ↺
 
@@ -37,6 +40,7 @@ Having any of the following would result in the invalid input state and lead to 
 # How does it work?
 ### Arc Values
 The degrees are located as follows:
+
  * 0° or 360° is East
  * 90° is South
  * 180° is West
@@ -80,6 +84,7 @@ Smaller arcs won't affect the rotation speed, but will decrease the arc scan per
 - - -
 # Lamp Color Output
 As for v0.4.x, lamp can be only in two states:
+
  * Grey: Radar is disabled
  * White: Radar is enabled
 
