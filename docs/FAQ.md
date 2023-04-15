@@ -52,10 +52,10 @@ I'll probably make a setting for that.
 
 ### Speed Formula
 The arc speed (in radians per tick) is calculated by the following formula:
-!["Arc Speed = \frac {\frac {1} {3}} {\frac{Range}{32} \times {\left(11 - Speed\right)}^{2}}"](http://www.sciweavers.org/tex2img.php?eq=Arc%20Speed%20%3D%20%5Cfrac%20%7B%5Cfrac%20%7B1%7D%20%7B3%7D%7D%20%7B%5Cfrac%7BRange%7D%7B32%7D%20%5Ctimes%20%7B%5Cleft%2811%20-%20Speed%5Cright%29%7D%5E%7B2%7D%7D&bc=Transparent&fc=Black&im=png&fs=24&ff=anttor&edit=0)
+!["Arc Speed = \frac {\frac {1} {3}} {\frac{Range}{32} \times {\left(11 - Speed\right)}^{2}}"](https://github.com/USSX-Hares/ScanningRadar/blob/main/docs/img/arc-speed.png?raw=true)
 
 The full circle rotation time is calculated as follows:
-!["Circle Period = \frac {2 \pi} {Arc Speed}"](http://www.sciweavers.org/tex2img.php?eq=Circle%20Period%20%3D%20%5Cfrac%20%7B2%20%5Cpi%7D%20%7BArc%20Speed%7D&bc=Transparent&fc=Black&im=png&fs=24&ff=anttor&edit=0)
+!["Circle Period = \frac {2 \pi} {Arc Speed}"](https://github.com/USSX-Hares/ScanningRadar/blob/main/docs/img/circle-period.png?raw=true)
 
 So, for the default settings (18 chunks radius and 5 scanning speed),
 the full circle period would be approximately 203.58 seconds (3.4 minutes).
